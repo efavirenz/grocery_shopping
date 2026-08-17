@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Grocery Receipt — บันทึกรายการซื้อของ</title>
+<meta name="description" content="บันทึกรายการซื้อของและยอดรวมระหว่างช้อปปิ้ง เก็บประวัติไว้เรียกดูย้อนหลัง" />
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#2F6F4E" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Grocery" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="icon" href="icons/icon-192.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --paper:#EEF0E7;
+    --surface:#FFFFFF;
+    --ink:#211F1B;
+    --ink-soft:#726F62;
+    --green:#2F6F4E;
+    --green-dark:#20503A;
+    --red:#B23A2E;
+    --line:#CBC7BA;
+    --radius:16px;
+    --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:'IBM Plex Sans Thai','IBM Plex Sans', -apple-system, system-ui, sans-serif;
+    color-scheme: light;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    padding-top:env(safe-area-inset-top);
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+    min-height:100vh;
+  }
+
+  .mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+
+  :focus-visible{ outline:2.5px solid var(--green); outline-offset:2px; }
+
+  button{ font-family:inherit; }
+
+  .shell{
+    max-width:520px;
+    margin:0 auto;
+    padding:18px 16px calc(96px + env(safe-area-inset-bottom));
+  }
+
+  /* ---------- Header ---------- */
+  .app-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .wordmark{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:.14em;
+    color:var(--green-dark);
+    text-transform:uppercase;
+    padding-top:5px;
+  }
+  .header-right{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:5px;
+  }
+  .today-date{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .version-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    border:1.5px solid var(--line);
+    background:var(--surface);
+    color:var(--ink-soft);
+    font-size:11px;
+    font-weight:600;
+    padding:4px 9px;
+    border-radius:999px;
+    cursor:pointer;
+    letter-spacing:.02em;
+    white-space:nowrap;
+  }
+  .version-btn:active{ background:var(--paper); }
+  .version-btn:disabled{ opacity:.7; cursor:default; }
+  .version-btn .v-refresh{ font-size:12px; line-height:1; }
+
+  .tabs{
+    display:flex;
+    gap:6px;
+    background:rgba(33,31,27,.06);
+    padding:4px;
+    border-radius:999px;
+    margin-bottom:18px;
+  }
+  .tab{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:9px 0;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .tab[aria-selected="true"]{
+    background:var(--surface);
+    color:var(--ink);
+    box-shadow:0 1px 3px rgba(33,31,27,.14);
+  }
+
+  /* ---------- Section labels ---------- */
+  .section-label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 2px 8px;
+  }
+
+  /* ---------- Terminal (add-item form) ---------- */
+  .terminal{
+    background:var(--surface);
+    border-radius:var(--radius);
+    padding:14px;
+    margin-bottom:22px;
+    box-shadow:0 1px 2px rgba(33,31,27,.06);
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    margin-bottom:10px;
+    position:relative;
+  }
+  .field label{
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+  .field input{
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:16px;
+    font-family:var(--sans);
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .field input:focus{ border-color:var(--green); background:var(--surface); }
+  .row-2{ display:flex; gap:10px; }
+  .row-2 .field{ flex:1; }
+  .field input.mono{ font-family:var(--mono); }
+
+  .suggestions{
+    position:absolute;
+    top:100%;
+    left:0; right:0;
+    background:var(--surface);
+    border:1.5px solid var(--line);
+    border-top:none;
+    border-radius:0 0 10px 10px;
+    z-index:5;
+    box-shadow:0 8px 18px rgba(33,31,27,.12);
+    overflow:hidden;
+  }
+  .suggestions button{
+    display:block;
+    width:100%;
+    text-align:left;
+    border:none;
+    background:var(--surface);
+    padding:10px 12px;
+    font-size:14px;
+    color:var(--ink);
+    cursor:pointer;
+    border-bottom:1px solid var(--paper);
+  }
+  .suggestions button:last-child{ border-bottom:none; }
+  .suggestions button:hover, .suggestions button:focus-visible{ background:var(--paper); }
+  .suggestions button .sugg-price{ color:var(--ink-soft); font-family:var(--mono); font-size:12px; margin-left:6px; }
+
+  .add-btn{
+    width:100%;
+    border:none;
+    background:var(--green);
+    color:#fff;
+    font-weight:700;
+    font-size:15px;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+    margin-top:2px;
+  }
+  .add-btn:active{ background:var(--green-dark); }
+  .add-btn:disabled{ background:#B9C4BB; cursor:not-allowed; }
+  .add-btn.editing{ background:var(--ink); }
+  .add-btn.editing:active{ background:#000; }
+
+  .edit-banner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    background:rgba(47,111,78,.09);
+    border-radius:9px;
+    padding:8px 10px;
+    margin-bottom:10px;
+    font-size:12.5px;
+    color:var(--green-dark);
+    font-weight:600;
+  }
+  .edit-banner span{ overflow-wrap:anywhere; }
+  .edit-banner button{
+    flex-shrink:0;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    font-weight:700;
+    font-size:12.5px;
+    text-decoration:underline;
+    cursor:pointer;
+    padding:2px 0;
+  }
+
+  /* ---------- Receipt ---------- */
+  .receipt-wrap{
+    filter:drop-shadow(0 14px 26px rgba(33,31,27,.15));
+    margin-bottom:20px;
+  }
+  .tear{
+    height:16px;
+    background:var(--surface);
+    clip-path:polygon(
+      0% 70%, 8.33% 0%, 16.67% 70%, 25% 0%, 33.33% 70%, 41.67% 0%,
+      50% 70%, 58.33% 0%, 66.67% 70%, 75% 0%, 83.33% 70%, 91.67% 0%,
+      100% 70%, 100% 100%, 0% 100%
+    );
+  }
+  .receipt{
+    background:var(--surface);
+    border-radius:0 0 4px 4px;
+    padding:16px 18px 20px;
+  }
+  .loc-field{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    margin-bottom:12px;
+  }
+  .loc-field label{
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+  .loc-field input{
+    border:none;
+    border-bottom:1.5px dashed var(--line);
+    padding:4px 2px 8px;
+    font-size:16px;
+    font-family:var(--sans);
+    font-weight:600;
+    background:transparent;
+    color:var(--ink);
+  }
+  .loc-field input:focus{ border-color:var(--green); }
+  .loc-field input::placeholder{ font-weight:400; color:var(--ink-soft); }
+
+  .divider{ border:none; border-top:1.5px dashed var(--line); margin:12px 0; }
+
+  .items{ list-style:none; margin:0; padding:0; }
+  .item-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 0;
+  }
+  .item-row + .item-row{ border-top:1px dashed var(--line); }
+  .item-main{ min-width:0; flex:1; }
+  .item-name{
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink);
+    overflow-wrap:anywhere;
+  }
+  .item-meta{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:1px;
+  }
+  .item-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-shrink:0;
+  }
+  .item-subtotal{ font-size:15px; font-weight:600; }
+  .item-del, .item-edit{
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    font-size:15px;
+    line-height:1;
+    cursor:pointer;
+    padding:4px 2px;
+  }
+  .item-del{ font-size:18px; }
+  .item-del:hover, .item-del:focus-visible{ color:var(--red); }
+  .item-edit:hover, .item-edit:focus-visible{ color:var(--green); }
+
+  .item-row.editing{
+    background:rgba(47,111,78,.07);
+    border-radius:8px;
+    margin:0 -8px;
+    padding:9px 8px;
+  }
+  .item-row.editing + .item-row{ border-top:none; }
+
+  .empty-note{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    padding:18px 6px;
+  }
+
+  .total-block{ margin-top:6px; }
+  .total-rule{ border:none; border-top:2px solid var(--ink); margin-bottom:3px; }
+  .total-rule.thin{ border-top-width:1px; margin-bottom:8px; }
+  .total-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .total-label{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+  }
+  .total-amount{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:26px;
+    color:var(--ink);
+  }
+
+  /* ---------- Sticky save bar ---------- */
+  .save-bar{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, var(--paper) 60%, rgba(238,240,231,0));
+  }
+  .save-bar-inner{ max-width:520px; margin:0 auto; }
+  .save-btn{
+    width:100%;
+    border:none;
+    background:var(--ink);
+    color:#fff;
+    font-weight:700;
+    font-size:15px;
+    padding:14px;
+    border-radius:12px;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(33,31,27,.22);
+  }
+  .save-btn:disabled{ background:#B7B4A8; box-shadow:none; cursor:not-allowed; }
+  .save-hint{
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed;
+    left:50%; top:14px;
+    transform:translate(-50%,-140%);
+    background:var(--ink);
+    color:#fff;
+    font-size:13.5px;
+    font-weight:600;
+    padding:10px 16px;
+    border-radius:999px;
+    box-shadow:0 10px 24px rgba(33,31,27,.3);
+    transition:transform .28s ease;
+    z-index:50;
+    pointer-events:none;
+  }
+  .toast.show{ transform:translate(-50%, calc(env(safe-area-inset-top))); }
+
+  /* ---------- History ---------- */
+  .stub-wrap{ margin-bottom:14px; filter:drop-shadow(0 6px 14px rgba(33,31,27,.10)); }
+  .stub-tear{
+    height:10px;
+    background:var(--surface);
+    clip-path:polygon(
+      0% 60%, 12.5% 0%, 25% 60%, 37.5% 0%, 50% 60%, 62.5% 0%, 75% 60%, 87.5% 0%,
+      100% 60%, 100% 100%, 0% 100%
+    );
+  }
+  .stub{
+    background:var(--surface);
+    border-radius:0 0 4px 4px;
+    padding:12px 14px;
+  }
+  .stub-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    cursor:pointer;
+    background:transparent;
+    border:none;
+    width:100%;
+    text-align:left;
+    padding:0;
+    color:inherit;
+    font-family:inherit;
+  }
+  .stub-loc{ font-size:15px; font-weight:700; }
+  .stub-date{ font-size:12px; color:var(--ink-soft); font-family:var(--mono); margin-top:2px; }
+  .stub-total{ font-family:var(--mono); font-weight:700; font-size:16px; white-space:nowrap; }
+  .stub-count{ font-size:11px; color:var(--ink-soft); text-align:right; margin-top:2px; }
+
+  .stub-detail{ margin-top:10px; }
+  .stub-detail[hidden]{ display:none; }
+  .stub-actions{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+  }
+  .stub-actions button{
+    flex:1;
+    border:1.5px solid var(--line);
+    background:var(--surface);
+    padding:8px;
+    border-radius:9px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .stub-actions .danger{ color:var(--red); border-color:#E7C9C4; }
+
+  .history-empty{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    padding:40px 20px;
+    line-height:1.6;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <header class="app-header">
+    <span class="wordmark">Grocery Receipt</span>
+    <div class="header-right">
+      <button class="version-btn mono" id="versionBtn" type="button" aria-label="ตรวจสอบเวอร์ชันล่าสุด">
+        <span class="v-refresh" aria-hidden="true">&#8635;</span>
+        <span id="versionLabel">…</span>
+      </button>
+      <span class="today-date mono" id="todayDate"></span>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tabToday" role="tab" aria-selected="true">วันนี้</button>
+    <button class="tab" id="tabHistory" role="tab" aria-selected="false">ประวัติ</button>
+  </div>
+
+  <!-- ============ TODAY VIEW ============ -->
+  <section id="viewToday">
+    <p class="section-label">เพิ่มรายการ</p>
+    <div class="terminal">
+      <div class="field" id="nameFieldWrap">
+        <label for="itemName">ชื่อสินค้า</label>
+        <input type="text" id="itemName" placeholder="เช่น ไข่ไก่, นมสด" autocomplete="off" />
+        <div class="suggestions" id="suggestions" hidden></div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="itemPrice">ราคา (บาท)</label>
+          <input type="number" id="itemPrice" class="mono" placeholder="0.00" inputmode="decimal" min="0" step="0.01" />
+        </div>
+        <div class="field">
+          <label for="itemQty">จำนวน</label>
+          <input type="number" id="itemQty" class="mono" value="1" inputmode="numeric" min="1" step="1" />
+        </div>
+      </div>
+      <div class="edit-banner" id="editBanner" hidden>
+        <span id="editBannerText"></span>
+        <button type="button" id="cancelEditBtn">ยกเลิก</button>
+      </div>
+      <button class="add-btn" id="addBtn">+ เพิ่มรายการ</button>
+    </div>
+
+    <p class="section-label">ใบเสร็จวันนี้</p>
+    <div class="receipt-wrap">
+      <div class="tear"></div>
+      <div class="receipt">
+        <div class="loc-field">
+          <label for="locationInput">สถานที่</label>
+          <input type="text" id="locationInput" placeholder="ชื่อห้าง หรือซูเปอร์มาร์เก็ต" />
+        </div>
+        <hr class="divider" />
+        <ul class="items" id="itemsList"></ul>
+        <div id="emptyNote" class="empty-note">ยังไม่มีรายการ พิมพ์สินค้าชิ้นแรกด้านบน</div>
+        <div class="total-block">
+          <hr class="total-rule" />
+          <hr class="total-rule thin" />
+          <div class="total-row">
+            <span class="total-label">TOTAL</span>
+            <span class="total-amount mono" id="totalAmount">฿0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HISTORY VIEW ============ -->
+  <section id="viewHistory" hidden>
+    <p class="section-label">ประวัติการช้อปปิ้ง</p>
+    <div id="historyList"></div>
+    <div id="historyEmpty" class="history-empty" hidden>
+      ยังไม่มีประวัติการช้อปปิ้ง<br />บันทึกทริปแรกของคุณที่แท็บ “วันนี้”
+    </div>
+  </section>
+</div>
+
+<div class="save-bar" id="saveBarToday">
+  <div class="save-bar-inner">
+    <button class="save-btn" id="saveBtn" disabled>บันทึกรายการวันนี้</button>
+    <div class="save-hint" id="saveHint">เพิ่มอย่างน้อย 1 รายการก่อนบันทึก</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var SESSIONS_KEY = "grocery_sessions_v1";
+  var DRAFT_KEY = "grocery_draft_v1";
+
+  // ---------- storage helpers ----------
+  function loadSessions(){
+    try{
+      var raw = localStorage.getItem(SESSIONS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveSessions(list){
+    try{ localStorage.setItem(SESSIONS_KEY, JSON.stringify(list)); }catch(e){}
+  }
+  function loadDraft(){
+    try{
+      var raw = localStorage.getItem(DRAFT_KEY);
+      return raw ? JSON.parse(raw) : { location:"", items:[] };
+    }catch(e){ return { location:"", items:[] }; }
+  }
+  function saveDraft(d){
+    try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); }catch(e){}
+  }
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function money(n){
+    return "฿" + Number(n||0).toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
+  }
+  function subtotal(item){ return item.price * item.qty; }
+  function total(items){ return items.reduce(function(s,i){ return s + subtotal(i); }, 0); }
+
+  var thaiDateFmt = new Intl.DateTimeFormat("th-TH-u-ca-buddhist", { day:"numeric", month:"short", year:"numeric" });
+  var thaiDateTimeFmt = new Intl.DateTimeFormat("th-TH-u-ca-buddhist", { day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit" });
+
+  // ---------- state ----------
+  var sessions = loadSessions();
+  var draft = loadDraft();
+  var expandedStub = null;
+  var editingId = null;
+
+  // ---------- DOM refs ----------
+  var el = {
+    todayDate: document.getElementById("todayDate"),
+    versionBtn: document.getElementById("versionBtn"),
+    versionLabel: document.getElementById("versionLabel"),
+    tabToday: document.getElementById("tabToday"),
+    tabHistory: document.getElementById("tabHistory"),
+    viewToday: document.getElementById("viewToday"),
+    viewHistory: document.getElementById("viewHistory"),
+    saveBarToday: document.getElementById("saveBarToday"),
+
+    itemName: document.getElementById("itemName"),
+    itemPrice: document.getElementById("itemPrice"),
+    itemQty: document.getElementById("itemQty"),
+    addBtn: document.getElementById("addBtn"),
+    suggestions: document.getElementById("suggestions"),
+    editBanner: document.getElementById("editBanner"),
+    editBannerText: document.getElementById("editBannerText"),
+    cancelEditBtn: document.getElementById("cancelEditBtn"),
+
+    locationInput: document.getElementById("locationInput"),
+    itemsList: document.getElementById("itemsList"),
+    emptyNote: document.getElementById("emptyNote"),
+    totalAmount: document.getElementById("totalAmount"),
+
+    saveBtn: document.getElementById("saveBtn"),
+    saveHint: document.getElementById("saveHint"),
+
+    historyList: document.getElementById("historyList"),
+    historyEmpty: document.getElementById("historyEmpty"),
+
+    toast: document.getElementById("toast")
+  };
+
+  el.todayDate.textContent = thaiDateFmt.format(new Date());
+
+  // ---------- tabs ----------
+  function showTab(name){
+    var isToday = name === "today";
+    el.viewToday.hidden = !isToday;
+    el.viewHistory.hidden = isToday;
+    el.saveBarToday.hidden = !isToday;
+    el.tabToday.setAttribute("aria-selected", isToday ? "true" : "false");
+    el.tabHistory.setAttribute("aria-selected", isToday ? "false" : "true");
+    if(!isToday) renderHistory();
+  }
+  el.tabToday.addEventListener("click", function(){ showTab("today"); });
+  el.tabHistory.addEventListener("click", function(){ showTab("history"); });
+
+  // ---------- toast ----------
+  var toastTimer = null;
+  function showToast(msg){
+    el.toast.textContent = msg;
+    el.toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.toast.classList.remove("show"); }, 2200);
+  }
+
+  // ---------- render: today / draft ----------
+  function renderDraft(){
+    el.locationInput.value = draft.location || "";
+
+    el.itemsList.innerHTML = "";
+    if(draft.items.length === 0){
+      el.emptyNote.style.display = "block";
+    } else {
+      el.emptyNote.style.display = "none";
+      draft.items.forEach(function(item){
+        var li = document.createElement("li");
+        li.className = "item-row" + (item.id === editingId ? " editing" : "");
+        li.innerHTML =
+          '<div class="item-main">' +
+            '<div class="item-name"></div>' +
+            '<div class="item-meta mono"></div>' +
+          '</div>' +
+          '<div class="item-right">' +
+            '<span class="item-subtotal mono"></span>' +
+            '<button class="item-edit" aria-label="แก้ไขรายการ" type="button">&#9998;</button>' +
+            '<button class="item-del" aria-label="ลบรายการ" type="button">&times;</button>' +
+          '</div>';
+        li.querySelector(".item-name").textContent = item.name;
+        li.querySelector(".item-meta").textContent = "x" + item.qty + "  ·  " + money(item.price) + "/ชิ้น";
+        li.querySelector(".item-subtotal").textContent = money(subtotal(item));
+        li.querySelector(".item-edit").addEventListener("click", function(){ enterEdit(item); });
+        li.querySelector(".item-del").addEventListener("click", function(){ removeItem(item.id); });
+        el.itemsList.appendChild(li);
+      });
+    }
+
+    var t = total(draft.items);
+    el.totalAmount.textContent = money(t);
+
+    var hasItems = draft.items.length > 0;
+    el.saveBtn.disabled = !hasItems;
+    el.saveHint.textContent = hasItems
+      ? draft.items.length + " รายการ · พร้อมบันทึก"
+      : "เพิ่มอย่างน้อย 1 รายการก่อนบันทึก";
+  }
+
+  function persistDraft(){ saveDraft(draft); }
+
+  el.locationInput.addEventListener("input", function(){
+    draft.location = el.locationInput.value;
+    persistDraft();
+  });
+
+  // ---------- add / edit / remove items ----------
+  function clearForm(){
+    el.itemName.value = "";
+    el.itemPrice.value = "";
+    el.itemQty.value = "1";
+    closeSuggestions();
+  }
+
+  function enterEdit(item){
+    editingId = item.id;
+    el.itemName.value = item.name;
+    el.itemPrice.value = item.price;
+    el.itemQty.value = item.qty;
+    el.editBannerText.textContent = "กำลังแก้ไข: " + item.name;
+    el.editBanner.hidden = false;
+    el.addBtn.textContent = "บันทึกการแก้ไข";
+    el.addBtn.classList.add("editing");
+    renderDraft();
+    el.itemName.focus();
+  }
+
+  function exitEdit(){
+    editingId = null;
+    el.editBanner.hidden = true;
+    el.addBtn.textContent = "+ เพิ่มรายการ";
+    el.addBtn.classList.remove("editing");
+    clearForm();
+  }
+
+  el.cancelEditBtn.addEventListener("click", function(){
+    exitEdit();
+    renderDraft();
+  });
+
+  function addItem(){
+    var name = el.itemName.value.trim();
+    var price = parseFloat(el.itemPrice.value);
+    var qty = parseInt(el.itemQty.value, 10);
+
+    if(!name){ el.itemName.focus(); return; }
+    if(isNaN(price) || price < 0){ el.itemPrice.focus(); return; }
+    if(isNaN(qty) || qty < 1){ qty = 1; }
+
+    if(editingId){
+      var idx = -1;
+      for(var i=0;i<draft.items.length;i++){
+        if(draft.items[i].id === editingId){ idx = i; break; }
+      }
+      if(idx !== -1){
+        draft.items[idx].name = name;
+        draft.items[idx].price = price;
+        draft.items[idx].qty = qty;
+      }
+      exitEdit();
+    } else {
+      draft.items.push({ id:uid(), name:name, price:price, qty:qty });
+      clearForm();
+      el.itemName.focus();
+    }
+
+    persistDraft();
+    renderDraft();
+  }
+  el.addBtn.addEventListener("click", addItem);
+  [el.itemName, el.itemPrice, el.itemQty].forEach(function(input){
+    input.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){ e.preventDefault(); addItem(); }
+    });
+  });
+
+  function removeItem(id){
+    if(id === editingId){ exitEdit(); }
+    draft.items = draft.items.filter(function(i){ return i.id !== id; });
+    persistDraft();
+    renderDraft();
+  }
+
+  // ---------- autocomplete ----------
+  function knownItems(){
+    // most-recent occurrence of each item name, newest first
+    var map = {};
+    var all = [];
+    sessions.forEach(function(s){ s.items.forEach(function(i){ all.push({ item:i, when:s.date }); }); });
+    all.sort(function(a,b){ return new Date(b.when) - new Date(a.when); });
+    all.forEach(function(rec){
+      var key = rec.item.name.trim().toLowerCase();
+      if(!map[key]) map[key] = rec.item;
+    });
+    return Object.keys(map).map(function(k){ return map[k]; });
+  }
+
+  function closeSuggestions(){
+    el.suggestions.hidden = true;
+    el.suggestions.innerHTML = "";
+  }
+
+  el.itemName.addEventListener("input", function(){
+    var q = el.itemName.value.trim().toLowerCase();
+    if(!q){ closeSuggestions(); return; }
+    var matches = knownItems().filter(function(i){
+      return i.name.toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 5);
+
+    if(matches.length === 0){ closeSuggestions(); return; }
+
+    el.suggestions.innerHTML = "";
+    matches.forEach(function(m){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.innerHTML = '<span></span><span class="sugg-price"></span>';
+      btn.querySelector("span").textContent = m.name;
+      btn.querySelector(".sugg-price").textContent = money(m.price);
+      btn.addEventListener("click", function(){
+        el.itemName.value = m.name;
+        el.itemPrice.value = m.price;
+        closeSuggestions();
+        el.itemPrice.focus();
+        el.itemPrice.select();
+      });
+      el.suggestions.appendChild(btn);
+    });
+    el.suggestions.hidden = false;
+  });
+
+  document.addEventListener("click", function(e){
+    if(!document.getElementById("nameFieldWrap").contains(e.target)) closeSuggestions();
+  });
+
+  // ---------- save trip ----------
+  el.saveBtn.addEventListener("click", function(){
+    if(draft.items.length === 0) return;
+    var session = {
+      id: uid(),
+      date: new Date().toISOString(),
+      location: draft.location.trim() || "ไม่ระบุสถานที่",
+      items: draft.items,
+      total: total(draft.items)
+    };
+    sessions.unshift(session);
+    saveSessions(sessions);
+
+    showToast("บันทึกแล้ว · " + session.items.length + " รายการ · " + money(session.total));
+
+    exitEdit();
+    draft = { location:"", items:[] };
+    persistDraft();
+    renderDraft();
+  });
+
+  // ---------- history ----------
+  function renderHistory(){
+    el.historyList.innerHTML = "";
+    if(sessions.length === 0){
+      el.historyEmpty.hidden = false;
+      return;
+    }
+    el.historyEmpty.hidden = true;
+
+    sessions.forEach(function(s){
+      var wrap = document.createElement("div");
+      wrap.className = "stub-wrap";
+
+      var itemsHtml = s.items.map(function(i){
+        return '<li class="item-row"><div class="item-main">' +
+          '<div class="item-name">' + escapeHtml(i.name) + '</div>' +
+          '<div class="item-meta mono">x' + i.qty + '  ·  ' + money(i.price) + '/ชิ้น</div>' +
+          '</div><div class="item-right"><span class="item-subtotal mono">' + money(subtotal(i)) + '</span></div></li>';
+      }).join("");
+
+      wrap.innerHTML =
+        '<div class="stub-tear"></div>' +
+        '<div class="stub">' +
+          '<button class="stub-top" type="button">' +
+            '<span>' +
+              '<div class="stub-loc"></div>' +
+              '<div class="stub-date"></div>' +
+            '</span>' +
+            '<span>' +
+              '<div class="stub-total"></div>' +
+              '<div class="stub-count"></div>' +
+            '</span>' +
+          '</button>' +
+          '<div class="stub-detail" hidden>' +
+            '<hr class="divider" />' +
+            '<ul class="items">' + itemsHtml + '</ul>' +
+            '<div class="stub-actions">' +
+              '<button type="button" class="edit-btn">แก้ไข</button>' +
+              '<button type="button" class="danger del-btn">ลบ</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      wrap.querySelector(".stub-loc").textContent = s.location;
+      wrap.querySelector(".stub-date").textContent = thaiDateTimeFmt.format(new Date(s.date));
+      wrap.querySelector(".stub-total").textContent = money(s.total);
+      wrap.querySelector(".stub-count").textContent = s.items.length + " รายการ";
+
+      var detail = wrap.querySelector(".stub-detail");
+      wrap.querySelector(".stub-top").addEventListener("click", function(){
+        var willOpen = detail.hidden;
+        // collapse any other open stub for a tidy list
+        document.querySelectorAll(".stub-detail").forEach(function(d){ d.hidden = true; });
+        detail.hidden = !willOpen;
+      });
+
+      wrap.querySelector(".edit-btn").addEventListener("click", function(){
+        if(draft.items.length > 0 || draft.location){
+          if(!confirm("รายการที่กำลังกรอกในแท็บ “วันนี้” จะถูกแทนที่ ดำเนินการต่อหรือไม่?")) return;
+        }
+        exitEdit();
+        draft = { location:s.location, items: s.items.map(function(i){ return Object.assign({}, i, { id:uid() }); }) };
+        persistDraft();
+        sessions = sessions.filter(function(x){ return x.id !== s.id; });
+        saveSessions(sessions);
+        renderDraft();
+        showTab("today");
+      });
+
+      wrap.querySelector(".del-btn").addEventListener("click", function(){
+        if(!confirm("ลบรายการนี้ทั้งหมด?")) return;
+        sessions = sessions.filter(function(x){ return x.id !== s.id; });
+        saveSessions(sessions);
+        renderHistory();
+      });
+
+      el.historyList.appendChild(wrap);
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+
+  // ---------- version badge / manual update check ----------
+  var swRegistration = null;
+
+  function renderVersionLabel(v){
+    if(!v){ el.versionLabel.textContent = "…"; return; }
+    var m = /v(\d+)\s*$/i.exec(v);
+    el.versionLabel.textContent = m ? ("v" + m[1]) : v;
+  }
+
+  function requestVersionFromSW(){
+    var worker = navigator.serviceWorker.controller || (swRegistration && swRegistration.active);
+    if(worker) worker.postMessage({ type:"GET_VERSION" });
+  }
+
+  function setUpdating(isUpdating){
+    el.versionBtn.disabled = isUpdating;
+    el.versionLabel.textContent = isUpdating ? "updating..." : el.versionLabel.textContent;
+  }
+
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.addEventListener("message", function(event){
+      if(event.data && event.data.type === "VERSION"){ renderVersionLabel(event.data.version); }
+    });
+
+    // A new SW has taken control (after a real update) — reload to run it.
+    navigator.serviceWorker.addEventListener("controllerchange", function(){
+      window.location.reload();
+    });
+
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("sw.js").then(function(reg){
+        swRegistration = reg;
+        requestVersionFromSW();
+      }).catch(function(){ el.versionBtn.hidden = true; });
+    });
+
+    el.versionBtn.addEventListener("click", function(){
+      if(!swRegistration){ return; }
+      setUpdating(true);
+      var updateFound = false;
+      function onUpdateFound(){ updateFound = true; }
+      swRegistration.addEventListener("updatefound", onUpdateFound);
+      swRegistration.update().catch(function(){});
+
+      // If a new version is found, install/activate fires "controllerchange"
+      // above and the page reloads. If nothing changed, reset after a beat.
+      setTimeout(function(){
+        swRegistration.removeEventListener("updatefound", onUpdateFound);
+        if(!updateFound){
+          setUpdating(false);
+          requestVersionFromSW();
+          showToast("เป็นเวอร์ชันล่าสุดอยู่แล้ว");
+        }
+      }, 2500);
+    });
+  } else {
+    el.versionBtn.hidden = true;
+  }
+
+  // ---------- init ----------
+  renderDraft();
+})();
+</script>
+</body>
+</html>
