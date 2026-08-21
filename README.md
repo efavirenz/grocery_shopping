@@ -1,10 +1,18 @@
-# Grocery Receipt PWA (v5)
+# Grocery Receipt PWA (v6)
 
-**Version**: `v5` (matches `CACHE_NAME` in `sw.js`)
+**Version**: `v6` (matches `CACHE_NAME` in `sw.js`)
 
 A shopping list app for tracking grocery items while shopping. Calculates itemized subtotals (price × quantity) and the grand total in real time. Stores history for each trip locally (`localStorage`) and can be installed as a PWA on an iPhone home screen.
 
 ## Key Features & Recent Updates
+
+### **Version**: `v6`
+- **Strict ES5 & Mobile Safari Fix**: Replaced ES6 `Object.assign()` with vanilla object cloning, restoring "Load to Today" functionality on legacy iOS Safari / Android WebViews.
+- **Service Worker Reliability**: Guarded offline cache from HTTP 4xx/5xx navigation error caching and added catch fallbacks for offline asset requests.
+- **Storage Fault-Tolerance**: Sanitized and validated corrupted `localStorage` records on boot; added state rollback on storage quota exhaustion.
+- **Dynamic Status Bar & Dark Theme Polish**: Synchronized `<meta name="theme-color">` dynamically with active color theme and fixed dark-mode contrast for banners and danger buttons.
+- **WAI-ARIA Autocomplete**: Added full keyboard navigation (`ArrowDown`, `ArrowUp`, `Enter`, `Escape`), ARIA roles (`combobox`, `listbox`, `option`), and automatic focusout dismissal.
+- **Data Protection**: Documented same-origin storage isolation requirements for multi-tenant / shared hosting deployments.
 
 ### **Version**: `v5`
 - **Security Hardening**: Elimination of XSS vectors via safe DOM `textContent` rendering and strict JSON import schema validation.

@@ -1,7 +1,7 @@
 // Grocery Receipt PWA — Service Worker
 // Bump CACHE_NAME on every deploy that changes cached files, so iOS Safari
 // picks up the new version instead of serving a stale copy.
-const CACHE_NAME = "grocery-receipt-v5";
+const CACHE_NAME = "grocery-receipt-v6";
 const ASSETS = [
   "./",
   "./index.html",
@@ -44,8 +44,10 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          if (res && res.status === 200) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
           return res;
         })
         .catch(() => caches.match("./index.html"))
@@ -54,6 +56,8 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req))
+    caches.match(req).then((cached) => {
+      return cached || fetch(req).catch(() => new Response("", { status: 408, statusText: "Offline" }));
+    })
   );
 });
