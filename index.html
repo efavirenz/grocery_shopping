@@ -68,6 +68,7 @@
   }
 
   *{ box-sizing:border-box; }
+  [hidden]{ display:none !important; }
   html,body{ margin:0; padding:0; }
   body{
     background:var(--paper);
@@ -336,6 +337,33 @@
   .add-btn.editing{ background:var(--ink); }
   .add-btn.editing:active{ background:#000; }
 
+  .clear-btn{
+    width:100%;
+    border:1.5px solid var(--line);
+    background:transparent;
+    color:var(--ink-soft);
+    font-weight:600;
+    font-size:13.5px;
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+    margin-top:8px;
+    transition:color .15s, border-color .15s, background-color .15s;
+  }
+  .clear-btn:hover, .clear-btn:focus-visible{
+    color:var(--red);
+    border-color:var(--red);
+    background:rgba(178,58,46,.06);
+  }
+  .clear-btn:active{
+    background:rgba(178,58,46,.12);
+  }
+  body.theme-dark .clear-btn:hover, body.theme-dark .clear-btn:focus-visible{
+    color:var(--red);
+    border-color:var(--red);
+    background:rgba(239,68,68,.12);
+  }
+
   .edit-banner{
     display:flex;
     align-items:center;
@@ -349,6 +377,7 @@
     color:var(--green-dark);
     font-weight:600;
   }
+  .edit-banner[hidden]{ display:none !important; }
   body.theme-dark .edit-banner{
     background:rgba(74,222,128,.15);
     color:var(--green);
@@ -557,6 +586,63 @@
   }
   .toast.show{ transform:translate(-50%, calc(env(safe-area-inset-top))); }
 
+  /* ---------- Undo Popup ---------- */
+  .undo-popup{
+    position:fixed;
+    left:50%;
+    bottom:calc(82px + env(safe-area-inset-bottom));
+    transform:translateX(-50%) translateY(20px);
+    background:var(--ink);
+    color:var(--surface);
+    font-size:13.5px;
+    font-weight:600;
+    padding:10px 16px;
+    border-radius:12px;
+    box-shadow:0 8px 24px rgba(33,31,27,.28);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    z-index:160;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .25s ease, transform .25s ease, visibility .25s ease;
+    max-width:calc(100vw - 32px);
+    box-sizing:border-box;
+  }
+  .undo-popup[hidden]{ display:none !important; }
+  .undo-popup.show{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(-50%) translateY(0);
+  }
+  .undo-popup .undo-text{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    min-width:0;
+    flex:1;
+  }
+  .undo-popup .undo-btn{
+    border:none;
+    background:rgba(255,255,255,0.18);
+    color:#FFFFFF;
+    font-weight:700;
+    font-size:13px;
+    font-family:inherit;
+    cursor:pointer;
+    padding:4px 10px;
+    border-radius:6px;
+    flex-shrink:0;
+  }
+  .undo-popup .undo-btn:active{
+    background:rgba(255,255,255,0.3);
+  }
+  body.theme-dark .undo-popup{
+    background:#242438;
+    border:1.5px solid var(--line);
+    color:var(--ink);
+  }
+
   /* ---------- History ---------- */
   .stub-wrap{ margin-bottom:14px; filter:drop-shadow(0 6px 14px rgba(33,31,27,.10)); }
   .stub-tear{
@@ -698,6 +784,7 @@
         <button type="button" id="cancelEditBtn">Cancel</button>
       </div>
       <button class="add-btn" id="addBtn">+ Add Item</button>
+      <button type="button" class="clear-btn" id="clearBtn">Clear</button>
     </div>
 
     <p class="section-label">Today's Receipt</p>
@@ -746,6 +833,11 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="undo-popup" id="undoPopup" role="status" aria-live="polite" hidden>
+  <span class="undo-text" id="undoPopupText"></span>
+  <button type="button" class="undo-btn" id="undoBtn">Undo</button>
+</div>
 
 <script>
 (function(){
@@ -903,6 +995,7 @@
     itemPrice: document.getElementById("itemPrice"),
     itemQty: document.getElementById("itemQty"),
     addBtn: document.getElementById("addBtn"),
+    clearBtn: document.getElementById("clearBtn"),
     suggestions: document.getElementById("suggestions"),
     editBanner: document.getElementById("editBanner"),
     editBannerText: document.getElementById("editBannerText"),
@@ -921,6 +1014,9 @@
     historyEmpty: document.getElementById("historyEmpty"),
 
     toast: document.getElementById("toast"),
+    undoPopup: document.getElementById("undoPopup"),
+    undoPopupText: document.getElementById("undoPopupText"),
+    undoBtn: document.getElementById("undoBtn"),
 
     menuToggleBtn: document.getElementById("menuToggleBtn"),
     menuCloseBtn: document.getElementById("menuCloseBtn"),
@@ -1207,6 +1303,7 @@
   function exitEdit(){
     editingId = null;
     el.editBanner.hidden = true;
+    el.editBannerText.textContent = "";
     el.addBtn.textContent = "+ Add Item";
     el.addBtn.classList.remove("editing");
     clearForm();
@@ -1216,6 +1313,78 @@
     exitEdit();
     renderDraft();
   });
+
+  // ---------- undo popup ----------
+  var undoTimer = null;
+  var lastEditedSnapshot = null;
+
+  function hideUndoPopup(){
+    clearTimeout(undoTimer);
+    undoTimer = null;
+    if(el.undoPopup){
+      el.undoPopup.classList.remove("show");
+      el.undoPopup.hidden = true;
+    }
+  }
+
+  function showUndoPopup(snapshot, editedName){
+    lastEditedSnapshot = snapshot;
+    el.undoPopupText.textContent = "Edited: " + editedName;
+    el.undoPopup.hidden = false;
+    void el.undoPopup.offsetWidth;
+    el.undoPopup.classList.add("show");
+
+    clearTimeout(undoTimer);
+    undoTimer = setTimeout(function(){
+      hideUndoPopup();
+    }, 5000);
+  }
+
+  el.undoBtn.addEventListener("click", function(){
+    if(!lastEditedSnapshot) return;
+    var targetId = lastEditedSnapshot.id;
+    var found = false;
+    for(var i=0; i<draft.items.length; i++){
+      if(draft.items[i].id === targetId){
+        draft.items[i].name = lastEditedSnapshot.name;
+        draft.items[i].price = lastEditedSnapshot.price;
+        draft.items[i].qty = lastEditedSnapshot.qty;
+        found = true;
+        break;
+      }
+    }
+    if(!found){
+      draft.items.push({
+        id: lastEditedSnapshot.id,
+        name: lastEditedSnapshot.name,
+        price: lastEditedSnapshot.price,
+        qty: lastEditedSnapshot.qty
+      });
+    }
+    var revertedName = lastEditedSnapshot.name;
+    hideUndoPopup();
+    persistDraft();
+    renderDraft();
+    showToast("Reverted changes to " + revertedName);
+  });
+
+  // ---------- clear today & form ----------
+  function clearAllToday(){
+    var hasItems = draft.items.length > 0;
+    var hasFields = el.itemName.value.trim() !== "" || el.itemPrice.value.trim() !== "" || (draft.location && draft.location.trim() !== "");
+    if(!hasItems && !hasFields) return;
+
+    if(hasItems){
+      if(!confirm("Clear all items and form fields?")) return;
+    }
+    hideUndoPopup();
+    exitEdit();
+    draft = { location:"", items:[] };
+    persistDraft();
+    renderDraft();
+    showToast("Cleared Today's list and form");
+  }
+  el.clearBtn.addEventListener("click", clearAllToday);
 
   function addItem(){
     var name = el.itemName.value.trim();
@@ -1240,9 +1409,16 @@
         if(draft.items[i].id === editingId){ idx = i; break; }
       }
       if(idx !== -1){
+        var prevItem = {
+          id: draft.items[idx].id,
+          name: draft.items[idx].name,
+          price: draft.items[idx].price,
+          qty: draft.items[idx].qty
+        };
         draft.items[idx].name = name;
         draft.items[idx].price = price;
         draft.items[idx].qty = qty;
+        showUndoPopup(prevItem, name);
       } else {
         draft.items.push({ id:uid(), name:name, price:price, qty:qty });
       }
@@ -1542,7 +1718,7 @@
   });
 
   // ---------- version badge / manual update check ----------
-  var currentVersion = "v6";
+  var currentVersion = "v7";
   var swRegistration = null;
 
   function renderVersionLabel(v){
