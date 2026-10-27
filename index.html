@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#2F6F4E" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Grocery" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <link rel="icon" href="icons/icon-192.png" />
@@ -66,6 +66,50 @@
     --red: #EF4444;
     color-scheme: dark;
   }
+  body.theme-nordic {
+    --paper: #0F172A;
+    --surface: #1E293B;
+    --ink: #F8FAFC;
+    --ink-soft: #94A3B8;
+    --green: #38BDF8;
+    --green-dark: #0EA5E9;
+    --line: #334155;
+    --red: #F87171;
+    color-scheme: dark;
+  }
+  body.theme-mocha {
+    --paper: #1C1614;
+    --surface: #28211E;
+    --ink: #F5EBE6;
+    --ink-soft: #A89C97;
+    --green: #F59E0B;
+    --green-dark: #D97706;
+    --line: #3D332F;
+    --red: #EF4444;
+    color-scheme: dark;
+  }
+  body.theme-amethyst {
+    --paper: #181226;
+    --surface: #241C38;
+    --ink: #F3E8FF;
+    --ink-soft: #A79BBF;
+    --green: #C084FC;
+    --green-dark: #A855F7;
+    --line: #3B2E58;
+    --red: #F87171;
+    color-scheme: dark;
+  }
+  body.theme-cyber {
+    --paper: #111116;
+    --surface: #1A1A22;
+    --ink: #FCE7F3;
+    --ink-soft: #B2A2AF;
+    --green: #FB7185;
+    --green-dark: #F43F5E;
+    --line: #2D2D3B;
+    --red: #FB7185;
+    color-scheme: dark;
+  }
 
   *{ box-sizing:border-box; }
   [hidden]{ display:none !important; }
@@ -119,7 +163,7 @@
     justify-content:center;
   }
   .menu-toggle:hover, .menu-toggle:focus-visible{ background:rgba(33,31,27,.08); }
-  body.theme-dark .menu-toggle:hover{ background:rgba(255,255,255,.1); }
+  body.is-dark .menu-toggle:hover, body.theme-dark .menu-toggle:hover{ background:rgba(255,255,255,.1); }
 
   .wordmark{
     font-family:var(--mono);
@@ -208,15 +252,28 @@
     color:var(--ink); cursor:pointer; text-align:left;
   }
   .menu-action-btn:active{ background:var(--surface); }
+  .theme-picker{ display:flex; flex-direction:column; gap:12px; }
+  .theme-group{ display:flex; flex-direction:column; gap:6px; }
+  .theme-group-title{
+    font-family:var(--mono);
+    font-size:10.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
   .theme-swatches{ display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; }
   .theme-swatch{
     display:flex; flex-direction:column; align-items:center; gap:6px;
-    padding:10px 4px; border:1.5px solid var(--line); border-radius:10px;
+    padding:9px 4px; border:1.5px solid var(--line); border-radius:10px;
     background:var(--paper); cursor:pointer; font-size:11px; font-weight:600;
     color:var(--ink); text-align:center;
+    transition:border-color .15s, box-shadow .15s;
   }
+  .theme-swatch:active{ background:var(--surface); }
   .theme-swatch.active{ border-color:var(--green); box-shadow:0 0 0 2px var(--green); }
-  .swatch-color{ width:22px; height:22px; border-radius:999px; border:1.5px solid rgba(0,0,0,0.15); }
+  .swatch-color{ width:22px; height:22px; border-radius:999px; border:1.5px solid rgba(0,0,0,0.15); flex-shrink:0; }
+  body.is-dark .swatch-color, body.theme-dark .swatch-color{ border-color:rgba(255,255,255,0.22); }
 
   .tabs{
     display:flex;
@@ -226,7 +283,7 @@
     border-radius:999px;
     margin-bottom:18px;
   }
-  body.theme-dark .tabs{ background:rgba(255,255,255,.08); }
+  body.is-dark .tabs, body.theme-dark .tabs{ background:rgba(255,255,255,.08); }
   .tab{
     flex:1;
     border:none;
@@ -317,7 +374,7 @@
   }
   .suggestions button:last-child{ border-bottom:none; }
   .suggestions button:hover, .suggestions button:focus-visible, .suggestions button.active{ background:var(--paper); }
-  body.theme-dark .suggestions button.active{ background:rgba(255,255,255,.08); }
+  body.is-dark .suggestions button.active, body.theme-dark .suggestions button.active{ background:rgba(255,255,255,.08); }
   .suggestions button .sugg-price{ color:var(--ink-soft); font-family:var(--mono); font-size:12px; margin-left:6px; }
 
   .add-btn{
@@ -358,6 +415,7 @@
   .clear-btn:active{
     background:rgba(178,58,46,.12);
   }
+  body.is-dark .clear-btn:hover, body.is-dark .clear-btn:focus-visible,
   body.theme-dark .clear-btn:hover, body.theme-dark .clear-btn:focus-visible{
     color:var(--red);
     border-color:var(--red);
@@ -378,8 +436,8 @@
     font-weight:600;
   }
   .edit-banner[hidden]{ display:none !important; }
-  body.theme-dark .edit-banner{
-    background:rgba(74,222,128,.15);
+  body.is-dark .edit-banner, body.theme-dark .edit-banner{
+    background:rgba(255,255,255,.08);
     color:var(--green);
   }
   .edit-banner span{ overflow-wrap:anywhere; }
@@ -637,8 +695,8 @@
   .undo-popup .undo-btn:active{
     background:rgba(255,255,255,0.3);
   }
-  body.theme-dark .undo-popup{
-    background:#242438;
+  body.is-dark .undo-popup, body.theme-dark .undo-popup{
+    background:var(--surface);
     border:1.5px solid var(--line);
     color:var(--ink);
   }
@@ -696,7 +754,7 @@
     color:var(--ink);
   }
   .stub-actions .danger{ color:var(--red); border-color:#E7C9C4; }
-  body.theme-dark .stub-actions .danger{ border-color:rgba(239,68,68,.4); }
+  body.is-dark .stub-actions .danger, body.theme-dark .stub-actions .danger{ border-color:rgba(239,68,68,.4); }
 
   .history-empty{
     text-align:center;
@@ -750,7 +808,7 @@
 
       <div class="menu-section">
         <span class="menu-section-title">Color Theme</span>
-        <div class="theme-swatches" id="themeSwatches"></div>
+        <div class="theme-picker" id="themeSwatches"></div>
       </div>
     </div>
   </div>
@@ -766,7 +824,7 @@
     <div class="terminal">
       <div class="field" id="nameFieldWrap">
         <label for="itemName">Item Name</label>
-        <input type="text" id="itemName" placeholder="e.g. Eggs, Milk" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-haspopup="listbox" aria-controls="suggestions" />
+        <input type="text" id="itemName" placeholder="e.g. Eggs, Milk" autocomplete="off" maxlength="150" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-haspopup="listbox" aria-controls="suggestions" />
         <div class="suggestions" id="suggestions" role="listbox" hidden></div>
       </div>
       <div class="row-2">
@@ -798,7 +856,7 @@
         <hr class="divider" />
         <div class="loc-field">
           <label for="locationInput">Location</label>
-          <input type="text" id="locationInput" placeholder="Store or supermarket name" />
+          <input type="text" id="locationInput" placeholder="Store or supermarket name" maxlength="100" />
         </div>
         <hr class="divider" />
         <ul class="items" id="itemsList"></ul>
@@ -853,9 +911,9 @@
 
   function validateItem(i){
     if(!i || typeof i !== "object") return null;
-    var name = typeof i.name === "string" ? i.name.trim() : "";
+    var name = typeof i.name === "string" ? i.name.trim().slice(0, 150) : "";
     var rawPrice = typeof i.price === "number" ? i.price : parseFloat(i.price);
-    var price = isFinite(rawPrice) && rawPrice >= 0 ? roundMoney(rawPrice) : 0;
+    var price = isFinite(rawPrice) && rawPrice >= 0 && rawPrice <= 10000000 ? roundMoney(rawPrice) : 0;
     var rawQty = typeof i.qty === "number" ? i.qty : parseInt(i.qty, 10);
     var qty = isFinite(rawQty) && rawQty >= 1 ? Math.floor(rawQty) : 1;
     if(!name) return null;
@@ -878,7 +936,7 @@
     if(validItems.length === 0) return null;
 
     var d = s.date && !isNaN(new Date(s.date).getTime()) ? new Date(s.date).toISOString() : new Date().toISOString();
-    var loc = typeof s.location === "string" && s.location.trim() ? s.location.trim() : "Unspecified Location";
+    var loc = typeof s.location === "string" && s.location.trim() ? s.location.trim().slice(0, 100) : "Unspecified Location";
     return {
       id: (typeof s.id === "string" && s.id) ? s.id : uid(),
       date: d,
@@ -950,7 +1008,9 @@
     return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
   }
   function roundMoney(n){
-    return Math.round((Number(n) || 0) * 100) / 100;
+    var num = Number(n) || 0;
+    var sign = num < 0 ? -1 : 1;
+    return sign * Number(Math.round(Number(Math.abs(num) + "e+2")) + "e-2");
   }
   function money(n){
     var num = roundMoney(n);
@@ -977,7 +1037,6 @@
   // ---------- state ----------
   var sessions = loadSessions();
   var draft = loadDraft();
-  var expandedStub = null;
   var editingId = null;
 
   // ---------- DOM refs ----------
@@ -1030,64 +1089,6 @@
 
   el.todayDate.textContent = dateFmt.format(new Date());
 
-  // ---------- Theme Switcher ----------
-  var themes = [
-    { id:"default", label:"Forest", color:"#2F6F4E" },
-    { id:"ocean", label:"Ocean", color:"#2563EB" },
-    { id:"sakura", label:"Sakura", color:"#DB2777" },
-    { id:"sunset", label:"Sunset", color:"#EA580C" },
-    { id:"grape", label:"Grape", color:"#7C3AED" },
-    { id:"dark", label:"Dark", color:"#4ADE80" }
-  ];
-
-  var themeMetaColors = {
-    "default": "#2F6F4E",
-    "ocean": "#2563EB",
-    "sakura": "#DB2777",
-    "sunset": "#EA580C",
-    "grape": "#7C3AED",
-    "dark": "#1A1A2E"
-  };
-
-  function applyTheme(themeId){
-    themes.forEach(function(t){
-      if(t.id !== "default") document.body.classList.remove("theme-" + t.id);
-    });
-    if(themeId !== "default"){
-      document.body.classList.add("theme-" + themeId);
-    }
-    var metaTheme = document.querySelector('meta[name="theme-color"]');
-    if(metaTheme){
-      metaTheme.setAttribute("content", themeMetaColors[themeId] || themeMetaColors["default"]);
-    }
-    try{ localStorage.setItem(THEME_KEY, themeId); }catch(e){}
-    renderThemeSwatches(themeId);
-  }
-
-  function renderThemeSwatches(activeId){
-    el.themeSwatches.innerHTML = "";
-    themes.forEach(function(t){
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "theme-swatch" + (t.id === activeId ? " active" : "");
-      
-      var swatch = document.createElement("span");
-      swatch.className = "swatch-color";
-      swatch.style.backgroundColor = t.color;
-      
-      var label = document.createElement("span");
-      label.textContent = t.label;
-      
-      btn.appendChild(swatch);
-      btn.appendChild(label);
-      btn.addEventListener("click", function(){ applyTheme(t.id); });
-      el.themeSwatches.appendChild(btn);
-    });
-  }
-
-  var savedTheme = localStorage.getItem(THEME_KEY) || "default";
-  applyTheme(savedTheme);
-
   // ---------- Drawer Menu ----------
   function openMenu(){
     el.menuOverlay.classList.add("open");
@@ -1106,10 +1107,133 @@
   el.menuCloseBtn.addEventListener("click", closeMenu);
   el.menuBackdrop.addEventListener("click", closeMenu);
 
+  // ---------- Theme Switcher ----------
+  var themes = [
+    { id:"default", label:"Forest", color:"#2F6F4E", isDark:false },
+    { id:"ocean", label:"Ocean", color:"#2563EB", isDark:false },
+    { id:"sakura", label:"Sakura", color:"#DB2777", isDark:false },
+    { id:"sunset", label:"Sunset", color:"#EA580C", isDark:false },
+    { id:"grape", label:"Grape", color:"#7C3AED", isDark:false },
+    { id:"dark", label:"Dark", color:"#4ADE80", isDark:true },
+    { id:"nordic", label:"Nordic", color:"#38BDF8", isDark:true },
+    { id:"mocha", label:"Mocha", color:"#F59E0B", isDark:true },
+    { id:"amethyst", label:"Amethyst", color:"#C084FC", isDark:true },
+    { id:"cyber", label:"Cyber", color:"#FB7185", isDark:true }
+  ];
+
+  var themeMetaColors = {
+    "default": "#2F6F4E",
+    "ocean": "#2563EB",
+    "sakura": "#DB2777",
+    "sunset": "#EA580C",
+    "grape": "#7C3AED",
+    "dark": "#1A1A2E",
+    "nordic": "#0F172A",
+    "mocha": "#1C1614",
+    "amethyst": "#181226",
+    "cyber": "#111116"
+  };
+
+  function applyTheme(themeId){
+    var selectedTheme = null;
+    themes.forEach(function(t){
+      if(t.id === themeId) selectedTheme = t;
+      if(t.id !== "default") document.body.classList.remove("theme-" + t.id);
+    });
+    if(!selectedTheme && themes.length > 0){
+      selectedTheme = themes[0];
+      themeId = "default";
+    }
+    if(themeId !== "default"){
+      document.body.classList.add("theme-" + themeId);
+    }
+    if(selectedTheme && selectedTheme.isDark){
+      document.body.classList.add("is-dark");
+    } else {
+      document.body.classList.remove("is-dark");
+    }
+    var metaTheme = document.querySelector('meta[name="theme-color"]');
+    if(metaTheme){
+      metaTheme.setAttribute("content", themeMetaColors[themeId] || themeMetaColors["default"]);
+    }
+    try{ localStorage.setItem(THEME_KEY, themeId); }catch(e){}
+    renderThemeSwatches(themeId);
+  }
+
+  function renderThemeSwatches(activeId){
+    el.themeSwatches.innerHTML = "";
+    var groups = [
+      { label: "Bright", isDark: false },
+      { label: "Dark", isDark: true }
+    ];
+
+    groups.forEach(function(g){
+      var groupDiv = document.createElement("div");
+      groupDiv.className = "theme-group";
+
+      var title = document.createElement("div");
+      title.className = "theme-group-title";
+      title.textContent = g.label;
+      groupDiv.appendChild(title);
+
+      var grid = document.createElement("div");
+      grid.className = "theme-swatches";
+
+      themes.forEach(function(t){
+        if(Boolean(t.isDark) !== g.isDark) return;
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "theme-swatch" + (t.id === activeId ? " active" : "");
+        btn.setAttribute("aria-label", t.label + " theme");
+
+        var swatch = document.createElement("span");
+        swatch.className = "swatch-color";
+        swatch.style.backgroundColor = t.color;
+
+        var label = document.createElement("span");
+        label.textContent = t.label;
+
+        btn.appendChild(swatch);
+        btn.appendChild(label);
+        btn.addEventListener("click", function(){
+          applyTheme(t.id);
+          closeMenu();
+        });
+        grid.appendChild(btn);
+      });
+
+      groupDiv.appendChild(grid);
+      el.themeSwatches.appendChild(groupDiv);
+    });
+  }
+
+  var savedTheme = localStorage.getItem(THEME_KEY) || "default";
+  applyTheme(savedTheme);
+
   document.addEventListener("keydown", function(e){
     if(e.key === "Escape"){
       if(el.menuOverlay.classList.contains("open")) closeMenu();
       if(!el.suggestions.hidden) closeSuggestions();
+    }
+  });
+
+  el.menuOverlay.addEventListener("keydown", function(e){
+    if(e.key === "Tab"){
+      var focusable = el.menuOverlay.querySelectorAll('button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      if(focusable.length === 0) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if(e.shiftKey){
+        if(document.activeElement === first){
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if(document.activeElement === last){
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
   });
 
@@ -1175,6 +1299,11 @@
   el.importFileInput.addEventListener("change", function(e){
     var file = e.target.files && e.target.files[0];
     if(!file) return;
+    if(file.size > 5 * 1024 * 1024){
+      showToast("File too large (max 5MB)");
+      el.importFileInput.value = "";
+      return;
+    }
     var reader = new FileReader();
     reader.onload = function(evt){
       try{
@@ -1182,10 +1311,12 @@
         var importedSessions = Array.isArray(data) ? data : (data.sessions || []);
         if(!Array.isArray(importedSessions)){
           showToast("Invalid JSON file format");
+          el.importFileInput.value = "";
           return;
         }
-        var existingMap = {};
+        var existingMap = Object.create(null);
         sessions.forEach(function(s){ existingMap[s.id] = true; });
+        var sessionsBackup = sessions.slice(0);
         var addedCount = 0;
         importedSessions.forEach(function(raw){
           var valid = validateSession(raw);
@@ -1196,7 +1327,12 @@
           }
         });
         sessions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
-        saveSessions(sessions);
+        var saved = saveSessions(sessions);
+        if(!saved){
+          sessions = sessionsBackup;
+          el.importFileInput.value = "";
+          return;
+        }
         showToast("Imported " + addedCount + " valid trip(s)");
         if(!el.viewHistory.hidden) renderHistory();
         closeMenu();
@@ -1272,11 +1408,27 @@
       : "Add at least 1 item before saving";
   }
 
-  function persistDraft(){ saveDraft(draft); }
+  var locationDebounceTimer = null;
+  function persistDraft(){
+    if(locationDebounceTimer){
+      clearTimeout(locationDebounceTimer);
+      locationDebounceTimer = null;
+    }
+    saveDraft(draft);
+  }
 
   el.locationInput.addEventListener("input", function(){
-    draft.location = el.locationInput.value;
-    persistDraft();
+    var val = el.locationInput.value;
+    if(val.length > 100){
+      val = val.slice(0, 100);
+      el.locationInput.value = val;
+    }
+    draft.location = val;
+    clearTimeout(locationDebounceTimer);
+    locationDebounceTimer = setTimeout(function(){
+      locationDebounceTimer = null;
+      saveDraft(draft);
+    }, 250);
   });
 
   // ---------- add / edit / remove items ----------
@@ -1387,13 +1539,13 @@
   el.clearBtn.addEventListener("click", clearAllToday);
 
   function addItem(){
-    var name = el.itemName.value.trim();
+    var name = el.itemName.value.trim().slice(0, 150);
     var price = parseFloat(el.itemPrice.value);
     var qty = parseInt(el.itemQty.value, 10);
 
     if(!name){ el.itemName.focus(); return; }
-    if(isNaN(price) || price < 0){
-      showToast("Please enter a valid price (≥ 0)");
+    if(!isFinite(price) || price < 0 || price > 10000000){
+      showToast("Please enter a valid price (0 - 10,000,000)");
       el.itemPrice.focus();
       return;
     }
@@ -1435,6 +1587,7 @@
   el.addBtn.addEventListener("click", addItem);
 
   function removeItem(id){
+    hideUndoPopup();
     if(id === editingId){ exitEdit(); }
     draft.items = draft.items.filter(function(i){ return i.id !== id; });
     persistDraft();
@@ -1447,7 +1600,7 @@
 
   function knownItems(){
     if(cachedKnownItems) return cachedKnownItems;
-    var map = {};
+    var map = Object.create(null);
     var all = [];
     sessions.forEach(function(s){
       if(Array.isArray(s.items)){
@@ -1471,6 +1624,7 @@
     el.suggestions.hidden = true;
     el.suggestions.innerHTML = "";
     el.itemName.setAttribute("aria-expanded", "false");
+    el.itemName.removeAttribute("aria-activedescendant");
     activeSuggIndex = -1;
     currentSuggestions = [];
   }
@@ -1481,6 +1635,7 @@
       if(i === activeSuggIndex){
         buttons[i].classList.add("active");
         buttons[i].setAttribute("aria-selected", "true");
+        el.itemName.setAttribute("aria-activedescendant", buttons[i].id);
         if(typeof buttons[i].scrollIntoView === "function"){
           buttons[i].scrollIntoView({ block:"nearest" });
         }
@@ -1489,6 +1644,9 @@
         buttons[i].setAttribute("aria-selected", "false");
       }
     }
+    if(activeSuggIndex < 0){
+      el.itemName.removeAttribute("aria-activedescendant");
+    }
   }
 
   function selectSuggestion(item){
@@ -1496,7 +1654,7 @@
     el.itemPrice.value = item.price;
     closeSuggestions();
     el.itemPrice.focus();
-    el.itemPrice.select();
+    try{ el.itemPrice.select(); }catch(err){}
   }
 
   el.itemName.addEventListener("input", function(){
@@ -1520,6 +1678,10 @@
       btn.innerHTML = '<span></span><span class="sugg-price mono"></span>';
       btn.querySelector("span").textContent = m.name;
       btn.querySelector(".sugg-price").textContent = money(m.price);
+      btn.addEventListener("pointerdown", function(e){
+        e.preventDefault();
+        selectSuggestion(m);
+      });
       btn.addEventListener("click", function(){ selectSuggestion(m); });
       el.suggestions.appendChild(btn);
     });
@@ -1537,7 +1699,11 @@
       }
       if(e.key === "ArrowUp"){
         e.preventDefault();
-        activeSuggIndex = (activeSuggIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+        if(activeSuggIndex <= 0){
+          activeSuggIndex = currentSuggestions.length - 1;
+        } else {
+          activeSuggIndex--;
+        }
         updateSuggestionSelection();
         return;
       }
@@ -1577,6 +1743,8 @@
   // ---------- save trip ----------
   el.saveBtn.addEventListener("click", function(){
     if(draft.items.length === 0) return;
+    hideUndoPopup();
+    draft.location = (el.locationInput.value || "").slice(0, 100);
     var session = {
       id: uid(),
       date: new Date().toISOString(),
@@ -1661,7 +1829,10 @@
       var detail = wrap.querySelector(".stub-detail");
       wrap.querySelector(".stub-top").addEventListener("click", function(){
         var willOpen = detail.hidden;
-        document.querySelectorAll(".stub-detail").forEach(function(d){ d.hidden = true; });
+        var allDetails = document.querySelectorAll(".stub-detail");
+        for(var dIdx=0; dIdx<allDetails.length; dIdx++){
+          allDetails[dIdx].hidden = true;
+        }
         detail.hidden = !willOpen;
       });
 
@@ -1669,6 +1840,7 @@
         if(draft.items.length > 0 || draft.location){
           if(!confirm("Current items in the 'Today' tab will be replaced with this list. Continue?")) return;
         }
+        hideUndoPopup();
         exitEdit();
         draft = {
           location: s.location,
@@ -1718,8 +1890,10 @@
   });
 
   // ---------- version badge / manual update check ----------
-  var currentVersion = "v7";
+  var currentVersion = "v9";
   var swRegistration = null;
+  var hadController = Boolean(navigator.serviceWorker && navigator.serviceWorker.controller);
+  var watchdogTimer = null;
 
   function renderVersionLabel(v){
     if(!v){ el.versionLabel.textContent = "…"; return; }
@@ -1738,17 +1912,28 @@
     if(isUpdating){
       el.versionLabel.textContent = "updating...";
     } else {
+      if(watchdogTimer){
+        clearTimeout(watchdogTimer);
+        watchdogTimer = null;
+      }
       renderVersionLabel(currentVersion);
     }
   }
 
   if("serviceWorker" in navigator){
     navigator.serviceWorker.addEventListener("message", function(event){
-      if(event.data && event.data.type === "VERSION"){ renderVersionLabel(event.data.version); }
+      if(event.data && event.data.type === "VERSION"){
+        setUpdating(false);
+        renderVersionLabel(event.data.version);
+      }
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", function(){
-      showToast("App updated in background! Ready.");
+      if(hadController){
+        showToast("App updated in background! Ready.");
+      }
+      hadController = true;
+      setUpdating(false);
       requestVersionFromSW();
     });
 
@@ -1765,7 +1950,11 @@
       var updateFound = false;
       function onUpdateFound(){ updateFound = true; }
       swRegistration.addEventListener("updatefound", onUpdateFound);
-      swRegistration.update().catch(function(){});
+      swRegistration.update().catch(function(){ setUpdating(false); });
+
+      watchdogTimer = setTimeout(function(){
+        setUpdating(false);
+      }, 6000);
 
       setTimeout(function(){
         swRegistration.removeEventListener("updatefound", onUpdateFound);

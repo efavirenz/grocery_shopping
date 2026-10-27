@@ -1,10 +1,28 @@
-# Grocery Receipt PWA (v7)
+# Grocery Receipt PWA (v9)
 
-**Version**: `v7` (matches `CACHE_NAME` in `sw.js`)
+**Version**: `v9` (matches `CACHE_NAME` in `sw.js`)
 
 A shopping list app for tracking grocery items while shopping. Calculates itemized subtotals (price × quantity) and the grand total in real time. Stores history for each trip locally (`localStorage`) and can be installed as a PWA on an iPhone home screen.
 
 ## Key Features & Recent Updates
+
+### **Version**: `v9`
+- **Carrier-Grade Offline Fallback**: Service Worker navigation intercepts HTTP 5xx server/gateway errors and seamlessly serves the cached offline application shell.
+- **Exact Half-Cent Rounding**: Replaced naive decimal math with exponential decimal rounding (`Number(Math.round(val + 'e2') + 'e-2')`), ensuring exact half-cent rounding across arbitrary price totals.
+- **Storage Quota & Atomic Import Rollback**: Added pre-import snapshot rollback on `QuotaExceededError` to prevent in-memory state desynchronization and phantom unpersisted data.
+- **State & Undo Isolation**: Automatically dismisses edit undo popup on trip completion, item deletion, or trip loading to prevent zombie items from being resurrected into new drafts.
+- **WAI-ARIA & Mobile Autocomplete Polish**: Fixed `ArrowUp` initial modulo math bug, added `aria-activedescendant` screen reader tracking, and implemented touch-safe `pointerdown` selection on iOS Safari.
+- **Accessibility & Modal Focus Trap**: Implemented keyboard focus trap inside the side drawer menu, cycling focus between the close button and theme options (WCAG 2.4.3).
+- **Strict Legacy Mobile ES5**: Replaced `NodeList.prototype.forEach` with standard indexed `for` loops in the history accordion for reliable compatibility with older mobile WebViews.
+- **iOS Safari PWA Contrast Polish**: Updated `apple-mobile-web-app-status-bar-style` to `default` for clear dark status bar text and icons on bright theme backgrounds.
+- **Performance & Defense-in-Depth**: Debounced location input draft persistence by 250ms, added 5MB JSON import size limit, finite price checks, and input character limits (150 for items, 100 for locations).
+- **Cache Invalidation**: Updated Service Worker cache name to `grocery-receipt-v9`.
+
+### **Version**: `v8`
+- **Expanded Themes (10 Total)**: Added 4 new dark themes for a balanced suite of 5 bright themes (Forest, Ocean, Sakura, Sunset, Grape) and 5 dark themes (Dark, Nordic, Mocha, Amethyst, Cyber).
+- **Categorized Theme Picker**: Structured menu swatches with dedicated "Bright" and "Dark" section groupings for quick discovery and visual clarity.
+- **Auto-Close Hamburger Menu**: Menu drawer automatically dismisses when any theme swatch is selected for a smooth shopping flow.
+- **Cache Invalidation**: Updated Service Worker cache name to `grocery-receipt-v8`.
 
 ### **Version**: `v7`
 - **Edit Banner Fix**: Resolved CSS specificity issue (`display: flex` overriding HTML `hidden` attribute) so "Editing: [item]" banner properly disappears when clicking Cancel.
