@@ -26,6 +26,7 @@
     --ink-soft:#726F62;
     --green:#2F6F4E;
     --green-dark:#20503A;
+    --on-accent:#FFFFFF;
     --red:#B23A2E;
     --line:#CBC7BA;
     --radius:16px;
@@ -47,6 +48,7 @@
   }
   body.theme-sunset {
     --green: #EA580C;
+    --on-accent: #211F1B;
     --green-dark: #C2410C;
     --paper: #FFF7ED;
   }
@@ -56,6 +58,7 @@
     --paper: #F5F3FF;
   }
   body.theme-dark {
+    --on-accent: #211F1B;
     --paper: #1A1A2E;
     --surface: #242438;
     --ink: #E5E5E5;
@@ -67,6 +70,7 @@
     color-scheme: dark;
   }
   body.theme-nordic {
+    --on-accent: #211F1B;
     --paper: #0F172A;
     --surface: #1E293B;
     --ink: #F8FAFC;
@@ -78,6 +82,7 @@
     color-scheme: dark;
   }
   body.theme-mocha {
+    --on-accent: #211F1B;
     --paper: #1C1614;
     --surface: #28211E;
     --ink: #F5EBE6;
@@ -89,6 +94,7 @@
     color-scheme: dark;
   }
   body.theme-amethyst {
+    --on-accent: #211F1B;
     --paper: #181226;
     --surface: #241C38;
     --ink: #F3E8FF;
@@ -100,6 +106,7 @@
     color-scheme: dark;
   }
   body.theme-cyber {
+    --on-accent: #211F1B;
     --paper: #111116;
     --surface: #1A1A22;
     --ink: #FCE7F3;
@@ -150,6 +157,8 @@
     gap:10px;
   }
   .menu-toggle{
+    min-width:44px;
+    min-height:44px;
     background:transparent;
     border:none;
     font-size:22px;
@@ -185,6 +194,7 @@
     color:var(--ink-soft);
   }
   .version-btn{
+    min-height:44px;
     display:inline-flex;
     align-items:center;
     gap:4px;
@@ -241,7 +251,7 @@
     padding-bottom:12px; border-bottom:1.5px solid var(--line);
   }
   .menu-title{ font-family:var(--mono); font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.08em; }
-  .menu-close{ background:transparent; border:none; font-size:24px; cursor:pointer; color:var(--ink-soft); padding:0 4px; }
+  .menu-close{ min-width:44px; min-height:44px; background:transparent; border:none; font-size:24px; cursor:pointer; color:var(--ink-soft); padding:0 4px; }
   .menu-section{ display:flex; flex-direction:column; gap:10px; }
   .menu-section-title{ font-family:var(--mono); font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; }
   .menu-action-btn{
@@ -285,6 +295,7 @@
   }
   body.is-dark .tabs, body.theme-dark .tabs{ background:rgba(255,255,255,.08); }
   .tab{
+    min-height:44px;
     flex:1;
     border:none;
     background:transparent;
@@ -300,6 +311,30 @@
     color:var(--ink);
     box-shadow:0 1px 3px rgba(33,31,27,.14);
   }
+
+  .recovery-banner{
+    background:var(--surface);
+    border:1.5px solid var(--red);
+    border-radius:12px;
+    padding:12px;
+    margin:0 0 16px;
+    color:var(--ink);
+    font-size:13px;
+  }
+  .recovery-banner p{ margin:0 0 10px; line-height:1.45; overflow-wrap:anywhere; }
+  .recovery-actions{ display:flex; flex-wrap:wrap; gap:8px; }
+  .recovery-actions button{
+    min-height:44px;
+    flex:1 1 130px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:8px 10px;
+    background:var(--paper);
+    color:var(--ink);
+    font:600 12px var(--sans);
+    cursor:pointer;
+  }
+  .recovery-actions button:disabled{ opacity:.55; cursor:not-allowed; }
 
   /* ---------- Section labels ---------- */
   .section-label{
@@ -381,7 +416,7 @@
     width:100%;
     border:none;
     background:var(--green);
-    color:#fff;
+    color:var(--on-accent);
     font-weight:700;
     font-size:15px;
     padding:12px;
@@ -389,10 +424,10 @@
     cursor:pointer;
     margin-top:2px;
   }
-  .add-btn:active{ background:var(--green-dark); }
-  .add-btn:disabled{ background:#B9C4BB; cursor:not-allowed; }
-  .add-btn.editing{ background:var(--ink); }
-  .add-btn.editing:active{ background:#000; }
+  .add-btn:active{ background:var(--green); }
+  .add-btn:disabled{ background:#B9C4BB; color:#211F1B; cursor:not-allowed; }
+  .add-btn.editing{ background:var(--ink); color:var(--paper); }
+  .add-btn.editing:active{ background:var(--ink); }
 
   .clear-btn{
     width:100%;
@@ -542,13 +577,21 @@
     margin-top:1px;
   }
   .item-right{
+    max-width:62%;
     display:flex;
+    flex-wrap:wrap;
     align-items:center;
     gap:8px;
     flex-shrink:0;
   }
   .item-subtotal{ font-size:15px; font-weight:600; }
   .item-del, .item-edit{
+    width:44px;
+    min-width:44px;
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
     border:none;
     background:transparent;
     color:var(--ink-soft);
@@ -717,6 +760,7 @@
     padding:12px 14px;
   }
   .stub-top{
+    min-height:44px;
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
@@ -730,10 +774,12 @@
     color:inherit;
     font-family:inherit;
   }
-  .stub-loc{ font-size:15px; font-weight:700; }
-  .stub-date{ font-size:12px; color:var(--ink-soft); font-family:var(--mono); margin-top:2px; }
-  .stub-total{ font-family:var(--mono); font-weight:700; font-size:16px; white-space:nowrap; }
-  .stub-count{ font-size:11px; color:var(--ink-soft); text-align:right; margin-top:2px; }
+  .stub-summary-left{ min-width:0; }
+  .stub-summary-right{ text-align:right; }
+  .stub-loc{ display:block; font-size:15px; font-weight:700; overflow-wrap:anywhere; }
+  .stub-date{ display:block; font-size:12px; color:var(--ink-soft); font-family:var(--mono); margin-top:2px; }
+  .stub-total{ display:block; font-family:var(--mono); font-weight:700; font-size:16px; white-space:nowrap; }
+  .stub-count{ display:block; font-size:11px; color:var(--ink-soft); text-align:right; margin-top:2px; }
 
   .stub-detail{ margin-top:10px; }
   .stub-detail[hidden]{ display:none; }
@@ -743,6 +789,7 @@
     margin-top:12px;
   }
   .stub-actions button{
+    min-height:44px;
     flex:1;
     border:1.5px solid var(--line);
     background:var(--surface);
@@ -813,13 +860,21 @@
     </div>
   </div>
 
-  <div class="tabs" role="tablist">
-    <button class="tab" id="tabToday" role="tab" aria-selected="true">Today</button>
-    <button class="tab" id="tabHistory" role="tab" aria-selected="false">History</button>
+  <div class="tabs" role="tablist" aria-label="Shopping views">
+    <button class="tab" id="tabToday" type="button" role="tab" aria-selected="true" aria-controls="viewToday" tabindex="0">Today</button>
+    <button class="tab" id="tabHistory" type="button" role="tab" aria-selected="false" aria-controls="viewHistory" tabindex="-1">History</button>
+  </div>
+
+  <div class="recovery-banner" id="recoveryBanner" role="alert" hidden>
+    <p id="recoveryMessage"></p>
+    <div class="recovery-actions">
+      <button type="button" id="recoveryExportBtn">Download raw backup</button>
+      <button type="button" id="recoveryContinueBtn">Continue after backup</button>
+    </div>
   </div>
 
   <!-- ============ TODAY VIEW ============ -->
-  <section id="viewToday">
+  <section id="viewToday" role="tabpanel" aria-labelledby="tabToday" tabindex="0">
     <p class="section-label">Add Item</p>
     <div class="terminal">
       <div class="field" id="nameFieldWrap">
@@ -874,7 +929,7 @@
   </section>
 
   <!-- ============ HISTORY VIEW ============ -->
-  <section id="viewHistory" hidden>
+  <section id="viewHistory" role="tabpanel" aria-labelledby="tabHistory" tabindex="0" hidden>
     <p class="section-label">Shopping History</p>
     <div id="historyList"></div>
     <div id="historyEmpty" class="history-empty" hidden>
@@ -904,62 +959,193 @@
   var SESSIONS_KEY = "grocery_sessions_v1";
   var DRAFT_KEY = "grocery_draft_v1";
   var THEME_KEY = "grocery_theme_v1";
+  var storageRecovery = [];
+  var recoveryReplacements = {};
+  var storageWriteLocked = false;
 
-  // ---------- storage helpers & validation ----------
+  // ---------- storage recovery & validation ----------
   var cachedKnownItems = null;
   function invalidateKnownItems(){ cachedKnownItems = null; }
+
+  function registerStorageIssue(key, raw, reason, replacement){
+    var existing = null;
+    for(var i=0; i<storageRecovery.length; i++){
+      if(storageRecovery[i].key === key){ existing = storageRecovery[i]; break; }
+    }
+    recoveryReplacements[key] = replacement;
+    if(existing){
+      existing.raw = raw;
+      existing.reason = reason;
+      existing.backupVerified = false;
+    } else {
+      existing = {
+        key: key,
+        raw: raw,
+        reason: reason,
+        backupKey: "grocery_recovery_" + key + "_v1",
+        backupVerified: false
+      };
+      storageRecovery.push(existing);
+    }
+    storageWriteLocked = true;
+    recoveryExportCreated = false;
+    if(raw !== null){
+      try{
+        var prior = localStorage.getItem(existing.backupKey);
+        if(prior === raw){
+          existing.backupVerified = true;
+        } else if(prior === null){
+          localStorage.setItem(existing.backupKey, raw);
+          existing.backupVerified = localStorage.getItem(existing.backupKey) === raw;
+        }
+      }catch(e){}
+    }
+  }
+
+  function readStorageRaw(key, fallback){
+    try{
+      return { ok:true, raw:localStorage.getItem(key) };
+    }catch(e){
+      registerStorageIssue(key, null, "Browser storage could not be read (" + (e && e.name ? e.name : "access error") + ").", fallback);
+      return { ok:false, raw:null };
+    }
+  }
+
+  function parseStrictNumber(value){
+    var num;
+    if(typeof value === "number"){
+      num = value;
+    } else if(typeof value === "string" && /^[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(value.trim())){
+      num = Number(value);
+    } else {
+      return NaN;
+    }
+    return isFinite(num) ? num : NaN;
+  }
+
+  function uid(){
+    if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"){
+      return crypto.randomUUID();
+    }
+    return Date.now().toString(36) + "-" +
+      Math.random().toString(36).slice(2) + "-" +
+      Math.random().toString(36).slice(2) + "-" +
+      Math.random().toString(36).slice(2);
+  }
+
+  function uniqueUid(used){
+    var base = uid();
+    var id = base;
+    var suffix = 1;
+    while(used && used[id]){
+      id = base + "-" + suffix;
+      suffix++;
+    }
+    if(used) used[id] = true;
+    return id;
+  }
+
+  function uniqueItemId(items){
+    var used = Object.create(null);
+    for(var i=0; i<items.length; i++) used[items[i].id] = true;
+    return uniqueUid(used);
+  }
+
+  function uniqueSessionId(list){
+    var used = Object.create(null);
+    for(var i=0; i<list.length; i++) used[list[i].id] = true;
+    return uniqueUid(used);
+  }
 
   function validateItem(i){
     if(!i || typeof i !== "object") return null;
     var name = typeof i.name === "string" ? i.name.trim().slice(0, 150) : "";
-    var rawPrice = typeof i.price === "number" ? i.price : parseFloat(i.price);
-    var price = isFinite(rawPrice) && rawPrice >= 0 && rawPrice <= 10000000 ? roundMoney(rawPrice) : 0;
-    var rawQty = typeof i.qty === "number" ? i.qty : parseInt(i.qty, 10);
-    var qty = isFinite(rawQty) && rawQty >= 1 ? Math.floor(rawQty) : 1;
-    if(!name) return null;
+    var rawPrice = parseStrictNumber(i.price);
+    var rawQty = parseStrictNumber(i.qty);
+    if(!name || !isFinite(rawPrice) || rawPrice < 0 || rawPrice > 10000000) return null;
+    if(!isFinite(rawQty) || rawQty < 1 || Math.floor(rawQty) !== rawQty) return null;
+    var price = roundMoney(rawPrice);
+    if(!isFinite(price)) return null;
     return {
-      id: (typeof i.id === "string" && i.id) ? i.id : uid(),
+      id: (typeof i.id === "string" && i.id.trim()) ? i.id.trim() : uid(),
       name: name,
       price: price,
-      qty: qty
+      qty: rawQty
     };
   }
 
-  function validateSession(s){
-    if(!s || typeof s !== "object") return null;
-    if(!Array.isArray(s.items) || s.items.length === 0) return null;
+  function validateSession(s, usedSessionIds){
+    if(!s || typeof s !== "object" || !Array.isArray(s.items) || s.items.length === 0) return null;
     var validItems = [];
+    var usedItemIds = Object.create(null);
     for(var j=0; j<s.items.length; j++){
       var item = validateItem(s.items[j]);
-      if(item) validItems.push(item);
+      if(item){
+        if(usedItemIds[item.id]) item.id = uniqueUid(usedItemIds);
+        else usedItemIds[item.id] = true;
+        validItems.push(item);
+      }
     }
     if(validItems.length === 0) return null;
 
-    var d = s.date && !isNaN(new Date(s.date).getTime()) ? new Date(s.date).toISOString() : new Date().toISOString();
+    var dateValue = NaN;
+    if(typeof s.date === "string" && s.date.trim()) dateValue = new Date(s.date).getTime();
+    else if(typeof s.date === "number" && isFinite(s.date)) dateValue = new Date(s.date).getTime();
+    var d = isFinite(dateValue) ? new Date(dateValue).toISOString() : null;
     var loc = typeof s.location === "string" && s.location.trim() ? s.location.trim().slice(0, 100) : "Unspecified Location";
+    var sessionId = (typeof s.id === "string" && s.id.trim()) ? s.id.trim() : uid();
+    if(usedSessionIds){
+      if(usedSessionIds[sessionId]) sessionId = uniqueUid(usedSessionIds);
+      else usedSessionIds[sessionId] = true;
+    }
+    var sessionTotal = total(validItems);
+    if(!isFinite(sessionTotal)) return null;
     return {
-      id: (typeof s.id === "string" && s.id) ? s.id : uid(),
+      id: sessionId,
       date: d,
       location: loc,
       items: validItems,
-      total: total(validItems)
+      total: sessionTotal
     };
   }
 
   function loadSessions(){
+    var result = readStorageRaw(SESSIONS_KEY, []);
+    if(!result.ok || result.raw === null) return [];
+    var parsed;
     try{
-      var raw = localStorage.getItem(SESSIONS_KEY);
-      var parsed = raw ? JSON.parse(raw) : [];
-      if(!Array.isArray(parsed)) return [];
-      var sanitized = [];
-      for(var i=0; i<parsed.length; i++){
-        var s = validateSession(parsed[i]);
-        if(s) sanitized.push(s);
+      parsed = JSON.parse(result.raw);
+    }catch(e){
+      registerStorageIssue(SESSIONS_KEY, result.raw, "Shopping history contains invalid JSON.", []);
+      return [];
+    }
+    if(!Array.isArray(parsed)){
+      registerStorageIssue(SESSIONS_KEY, result.raw, "Shopping history has an invalid data structure.", []);
+      return [];
+    }
+    var sanitized = [];
+    var invalidCount = 0;
+    var usedSessionIds = Object.create(null);
+    for(var i=0; i<parsed.length; i++){
+      var valid = validateSession(parsed[i], usedSessionIds);
+      if(valid){
+        sanitized.push(valid);
+        if(!parsed[i] || !Array.isArray(parsed[i].items) || valid.items.length !== parsed[i].items.length) invalidCount++;
+      } else {
+        invalidCount++;
       }
-      return sanitized;
-    }catch(e){ return []; }
+    }
+    if(invalidCount > 0){
+      registerStorageIssue(SESSIONS_KEY, result.raw, invalidCount + " invalid history record(s) or item(s) were skipped. The original data is preserved for recovery.", sanitized);
+    }
+    return sanitized;
   }
+
   function saveSessions(list){
+    if(storageWriteLocked){
+      showToast("Recover stored data before saving changes");
+      return false;
+    }
     try{
       localStorage.setItem(SESSIONS_KEY, JSON.stringify(list));
       invalidateKnownItems();
@@ -967,58 +1153,152 @@
     }catch(e){
       if(e && (e.name === "QuotaExceededError" || e.code === 22)){
         showToast("⚠️ Storage full: export & delete old trips");
+      } else {
+        showToast("Could not save shopping history");
       }
       return false;
     }
   }
+
   function loadDraft(){
+    var emptyDraft = { location:"", items:[] };
+    var result = readStorageRaw(DRAFT_KEY, emptyDraft);
+    if(!result.ok || result.raw === null) return emptyDraft;
+    var parsed;
     try{
-      var raw = localStorage.getItem(DRAFT_KEY);
-      var parsed = raw ? JSON.parse(raw) : null;
-      if(!parsed || typeof parsed !== "object") return { location:"", items:[] };
-      var validItems = [];
-      if(Array.isArray(parsed.items)){
-        for(var i=0; i<parsed.items.length; i++){
-          var it = validateItem(parsed.items[i]);
-          if(it) validItems.push(it);
-        }
+      parsed = JSON.parse(result.raw);
+    }catch(e){
+      registerStorageIssue(DRAFT_KEY, result.raw, "Today's draft contains invalid JSON.", emptyDraft);
+      return emptyDraft;
+    }
+    if(!parsed || typeof parsed !== "object" || !Array.isArray(parsed.items)){
+      registerStorageIssue(DRAFT_KEY, result.raw, "Today's draft has an invalid data structure.", emptyDraft);
+      return emptyDraft;
+    }
+    var validItems = [];
+    var invalidCount = 0;
+    var usedIds = Object.create(null);
+    for(var i=0; i<parsed.items.length; i++){
+      var item = validateItem(parsed.items[i]);
+      if(item){
+        if(usedIds[item.id]) item.id = uniqueUid(usedIds);
+        else usedIds[item.id] = true;
+        validItems.push(item);
+      } else {
+        invalidCount++;
       }
-      return {
-        location: typeof parsed.location === "string" ? parsed.location : "",
-        items: validItems
-      };
-    }catch(e){ return { location:"", items:[] }; }
+    }
+    var loaded = {
+      location: typeof parsed.location === "string" ? parsed.location.slice(0, 100) : "",
+      items: validItems,
+      pendingSavedSessionId: typeof parsed.pendingSavedSessionId === "string" ? parsed.pendingSavedSessionId : null
+    };
+    if(invalidCount > 0 || (parsed.location !== undefined && typeof parsed.location !== "string")){
+      registerStorageIssue(DRAFT_KEY, result.raw, invalidCount + " invalid draft item(s) or fields were skipped. The original data is preserved for recovery.", loaded);
+    }
+    return loaded;
   }
+
   function saveDraft(d){
+    if(storageWriteLocked){
+      showToast("Recover stored data before saving changes");
+      return false;
+    }
     try{
       localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
       return true;
     }catch(e){
       if(e && (e.name === "QuotaExceededError" || e.code === 22)){
         showToast("⚠️ Storage full: draft cannot be saved");
+      } else {
+        showToast("Could not save today's draft");
       }
       return false;
     }
   }
 
-  function uid(){
-    if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"){
-      return crypto.randomUUID().slice(0,8);
+  function cloneDraft(source){
+    var copy = {
+      location:source.location || "",
+      items:[],
+      pendingSavedSessionId:source.pendingSavedSessionId || null
+    };
+    for(var i=0; i<source.items.length; i++){
+      copy.items.push({
+        id:source.items[i].id,
+        name:source.items[i].name,
+        price:source.items[i].price,
+        qty:source.items[i].qty
+      });
     }
-    return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+    return copy;
   }
+
+  function cloneSessions(source){
+    var copy = [];
+    for(var i=0; i<source.length; i++){
+      var session = source[i];
+      var items = [];
+      for(var j=0; j<session.items.length; j++){
+        items.push({
+          id:session.items[j].id,
+          name:session.items[j].name,
+          price:session.items[j].price,
+          qty:session.items[j].qty
+        });
+      }
+      copy.push({
+        id:session.id,
+        date:session.date,
+        location:session.location,
+        items:items,
+        total:session.total
+      });
+    }
+    return copy;
+  }
+
   function roundMoney(n){
-    var num = Number(n) || 0;
+    var num = Number(n);
+    if(!isFinite(num)) return NaN;
+    if(Math.abs(num) >= 100000000000000) return num;
     var sign = num < 0 ? -1 : 1;
     return sign * Number(Math.round(Number(Math.abs(num) + "e+2")) + "e-2");
   }
   function money(n){
     var num = roundMoney(n);
+    if(!isFinite(num)) return "฿—";
     var sign = num < 0 ? "-" : "";
     return sign + "฿" + Math.abs(num).toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
   }
-  function subtotal(item){ return roundMoney(item.price * item.qty); }
-  function total(items){ return roundMoney(items.reduce(function(s,i){ return s + subtotal(i); }, 0)); }
+  function subtotal(item){
+    var result = roundMoney(item.price * item.qty);
+    return isFinite(result) ? result : NaN;
+  }
+  function total(items){
+    var sum = 0;
+    for(var i=0; i<items.length; i++){
+      var line = subtotal(items[i]);
+      if(!isFinite(line)) return NaN;
+      sum = roundMoney(sum + line);
+      if(!isFinite(sum)) return NaN;
+    }
+    return sum;
+  }
+
+  function sortSessionsByDate(list){
+    list.sort(function(a, b){
+      var aTime = a.date ? new Date(a.date).getTime() : NaN;
+      var bTime = b.date ? new Date(b.date).getTime() : NaN;
+      var aKnown = isFinite(aTime);
+      var bKnown = isFinite(bTime);
+      if(aKnown && bKnown) return bTime - aTime;
+      if(aKnown) return -1;
+      if(bKnown) return 1;
+      return 0;
+    });
+    return list;
+  }
 
   var dateFmt = new Intl.DateTimeFormat("en-US", { day:"numeric", month:"short", year:"numeric" });
   var dateTimeFmt = new Intl.DateTimeFormat("en-US", { day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit" });
@@ -1035,7 +1315,7 @@
   }
 
   // ---------- state ----------
-  var sessions = loadSessions();
+  var sessions = sortSessionsByDate(loadSessions());
   var draft = loadDraft();
   var editingId = null;
 
@@ -1084,10 +1364,113 @@
     exportBtn: document.getElementById("exportBtn"),
     importBtn: document.getElementById("importBtn"),
     importFileInput: document.getElementById("importFileInput"),
-    themeSwatches: document.getElementById("themeSwatches")
+    themeSwatches: document.getElementById("themeSwatches"),
+    recoveryBanner: document.getElementById("recoveryBanner"),
+    recoveryMessage: document.getElementById("recoveryMessage"),
+    recoveryExportBtn: document.getElementById("recoveryExportBtn"),
+    recoveryContinueBtn: document.getElementById("recoveryContinueBtn")
   };
 
   el.todayDate.textContent = dateFmt.format(new Date());
+
+  var recoveryExportCreated = false;
+
+  function renderRecoveryBanner(){
+    if(storageRecovery.length === 0){
+      el.recoveryBanner.hidden = true;
+      return;
+    }
+    var descriptions = [];
+    var canContinue = true;
+    var hasRaw = false;
+    for(var i=0; i<storageRecovery.length; i++){
+      descriptions.push(storageRecovery[i].key + ": " + storageRecovery[i].reason);
+      if(storageRecovery[i].raw === null) canContinue = false;
+      if(storageRecovery[i].raw !== null) hasRaw = true;
+      if(!storageRecovery[i].backupVerified && !recoveryExportCreated) canContinue = false;
+    }
+    el.recoveryMessage.textContent = "Stored data needs recovery. Saving is paused to protect the original data. " + descriptions.join(" ");
+    el.recoveryBanner.hidden = false;
+    el.recoveryExportBtn.disabled = !hasRaw;
+    el.recoveryContinueBtn.disabled = !canContinue;
+  }
+
+  function downloadRecoveryBackup(){
+    var records = [];
+    for(var i=0; i<storageRecovery.length; i++){
+      records.push({
+        key:storageRecovery[i].key,
+        reason:storageRecovery[i].reason,
+        raw:storageRecovery[i].raw
+      });
+    }
+    var payload = {
+      type:"grocery-storage-recovery",
+      createdAt:new Date().toISOString(),
+      records:records
+    };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
+    var url = URL.createObjectURL(blob);
+    try{
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "grocery_storage_recovery_" + new Date().toISOString().slice(0, 10) + ".json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      recoveryExportCreated = true;
+      showToast("Raw recovery backup download started");
+    }catch(e){
+      showToast("Could not start recovery backup download");
+    }finally{
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    }
+    renderRecoveryBanner();
+  }
+
+  function continueAfterRecovery(){
+    if(storageRecovery.length === 0) return;
+    for(var i=0; i<storageRecovery.length; i++){
+      if(storageRecovery[i].raw === null || (!storageRecovery[i].backupVerified && !recoveryExportCreated)){
+        showToast("Download the raw recovery backup before continuing");
+        return;
+      }
+    }
+    if(!confirm("The original data has been backed up. Continue with the validated data available to this app?")) return;
+    try{
+      for(var j=0; j<storageRecovery.length; j++){
+        var record = storageRecovery[j];
+        var replacement = recoveryReplacements[record.key];
+        var serialized = JSON.stringify(replacement);
+        localStorage.setItem(record.key, serialized);
+        if(localStorage.getItem(record.key) !== serialized){
+          throw new Error("Recovery verification failed for " + record.key);
+        }
+      }
+      if(recoveryReplacements[SESSIONS_KEY]){
+        sessions = sortSessionsByDate(recoveryReplacements[SESSIONS_KEY]);
+        invalidateKnownItems();
+      }
+      if(recoveryReplacements[DRAFT_KEY]){
+        draft = recoveryReplacements[DRAFT_KEY];
+      }
+      storageRecovery = [];
+      recoveryReplacements = {};
+      storageWriteLocked = false;
+      recoveryExportCreated = false;
+      renderRecoveryBanner();
+      renderDraft();
+      if(!el.viewHistory.hidden) renderHistory();
+      showToast("Stored data recovery completed");
+    }catch(e){
+      showToast("Recovery could not be verified. Original backup remains available.");
+      renderRecoveryBanner();
+    }
+  }
+
+  el.recoveryExportBtn.addEventListener("click", downloadRecoveryBackup);
+  el.recoveryContinueBtn.addEventListener("click", continueAfterRecovery);
+  renderRecoveryBanner();
 
   // ---------- Drawer Menu ----------
   function openMenu(){
@@ -1134,7 +1517,7 @@
     "cyber": "#111116"
   };
 
-  function applyTheme(themeId){
+  function applyTheme(themeId, skipPersist){
     var selectedTheme = null;
     themes.forEach(function(t){
       if(t.id === themeId) selectedTheme = t;
@@ -1156,7 +1539,9 @@
     if(metaTheme){
       metaTheme.setAttribute("content", themeMetaColors[themeId] || themeMetaColors["default"]);
     }
-    try{ localStorage.setItem(THEME_KEY, themeId); }catch(e){}
+    if(!skipPersist){
+      try{ localStorage.setItem(THEME_KEY, themeId); }catch(e){}
+    }
     renderThemeSwatches(themeId);
   }
 
@@ -1207,7 +1592,8 @@
     });
   }
 
-  var savedTheme = localStorage.getItem(THEME_KEY) || "default";
+  var savedTheme = "default";
+  try{ savedTheme = localStorage.getItem(THEME_KEY) || "default"; }catch(e){}
   applyTheme(savedTheme);
 
   document.addEventListener("keydown", function(e){
@@ -1308,32 +1694,45 @@
     reader.onload = function(evt){
       try{
         var data = JSON.parse(evt.target.result);
-        var importedSessions = Array.isArray(data) ? data : (data.sessions || []);
-        if(!Array.isArray(importedSessions)){
+        var importedSessions = Array.isArray(data) ? data : (data && Array.isArray(data.sessions) ? data.sessions : null);
+        if(!importedSessions){
           showToast("Invalid JSON file format");
           el.importFileInput.value = "";
           return;
         }
-        var existingMap = Object.create(null);
-        sessions.forEach(function(s){ existingMap[s.id] = true; });
-        var sessionsBackup = sessions.slice(0);
-        var addedCount = 0;
-        importedSessions.forEach(function(raw){
-          var valid = validateSession(raw);
-          if(valid && !existingMap[valid.id]){
-            sessions.push(valid);
-            existingMap[valid.id] = true;
-            addedCount++;
-          }
-        });
-        sessions.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
-        var saved = saveSessions(sessions);
-        if(!saved){
-          sessions = sessionsBackup;
+        if(storageWriteLocked){
+          showToast("Recover stored data before importing history");
           el.importFileInput.value = "";
           return;
         }
-        showToast("Imported " + addedCount + " valid trip(s)");
+
+        var existingMap = Object.create(null);
+        sessions.forEach(function(s){ existingMap[s.id] = true; });
+        var nextSessions = cloneSessions(sessions);
+        var addedCount = 0;
+        var skippedCount = 0;
+        importedSessions.forEach(function(raw){
+          var valid = validateSession(raw);
+          if(!valid){
+            skippedCount++;
+            return;
+          }
+          if(existingMap[valid.id]){
+            skippedCount++;
+            return;
+          }
+          nextSessions.push(valid);
+          existingMap[valid.id] = true;
+          addedCount++;
+        });
+        sortSessionsByDate(nextSessions);
+        if(!saveSessions(nextSessions)){
+          el.importFileInput.value = "";
+          return;
+        }
+        sessions = nextSessions;
+        invalidateKnownItems();
+        showToast("Imported " + addedCount + " trip(s); skipped " + skippedCount);
         if(!el.viewHistory.hidden) renderHistory();
         closeMenu();
       }catch(err){
@@ -1352,10 +1751,32 @@
     el.saveBarToday.hidden = !isToday;
     el.tabToday.setAttribute("aria-selected", isToday ? "true" : "false");
     el.tabHistory.setAttribute("aria-selected", isToday ? "false" : "true");
+    el.tabToday.setAttribute("tabindex", isToday ? "0" : "-1");
+    el.tabHistory.setAttribute("tabindex", isToday ? "-1" : "0");
     if(!isToday) renderHistory();
   }
+
+  function handleTabKeydown(e){
+    var targetTab = null;
+    if(e.key === "ArrowRight" || e.key === "ArrowDown"){
+      targetTab = e.currentTarget === el.tabToday ? el.tabHistory : el.tabToday;
+    } else if(e.key === "ArrowLeft" || e.key === "ArrowUp"){
+      targetTab = e.currentTarget === el.tabToday ? el.tabHistory : el.tabToday;
+    } else if(e.key === "Home"){
+      targetTab = el.tabToday;
+    } else if(e.key === "End"){
+      targetTab = el.tabHistory;
+    }
+    if(!targetTab) return;
+    e.preventDefault();
+    targetTab.focus();
+    showTab(targetTab === el.tabToday ? "today" : "history");
+  }
+
   el.tabToday.addEventListener("click", function(){ showTab("today"); });
   el.tabHistory.addEventListener("click", function(){ showTab("history"); });
+  el.tabToday.addEventListener("keydown", handleTabKeydown);
+  el.tabHistory.addEventListener("keydown", handleTabKeydown);
 
   // ---------- toast ----------
   var toastTimer = null;
@@ -1409,12 +1830,22 @@
   }
 
   var locationDebounceTimer = null;
-  function persistDraft(){
+  var locationSnapshot = null;
+
+  function cancelLocationSave(){
     if(locationDebounceTimer){
       clearTimeout(locationDebounceTimer);
       locationDebounceTimer = null;
     }
-    saveDraft(draft);
+    locationSnapshot = null;
+  }
+
+  function persistDraft(previousDraft){
+    cancelLocationSave();
+    if(saveDraft(draft)) return true;
+    if(previousDraft) draft = previousDraft;
+    renderDraft();
+    return false;
   }
 
   el.locationInput.addEventListener("input", function(){
@@ -1423,11 +1854,19 @@
       val = val.slice(0, 100);
       el.locationInput.value = val;
     }
+    if(!locationDebounceTimer) locationSnapshot = cloneDraft(draft);
     draft.location = val;
+    draft.pendingSavedSessionId = null;
     clearTimeout(locationDebounceTimer);
     locationDebounceTimer = setTimeout(function(){
       locationDebounceTimer = null;
-      saveDraft(draft);
+      if(!saveDraft(draft)){
+        if(locationSnapshot) draft = locationSnapshot;
+        el.locationInput.value = draft.location || "";
+        renderDraft();
+        showToast("Location change was not saved");
+      }
+      locationSnapshot = null;
     }, 250);
   });
 
@@ -1494,6 +1933,7 @@
 
   el.undoBtn.addEventListener("click", function(){
     if(!lastEditedSnapshot) return;
+    var previousDraft = cloneDraft(draft);
     var targetId = lastEditedSnapshot.id;
     var found = false;
     for(var i=0; i<draft.items.length; i++){
@@ -1514,8 +1954,13 @@
       });
     }
     var revertedName = lastEditedSnapshot.name;
+    draft.pendingSavedSessionId = null;
+    if(!persistDraft(previousDraft)){
+      showToast("Undo was not saved. Your previous list was restored.");
+      return;
+    }
     hideUndoPopup();
-    persistDraft();
+    lastEditedSnapshot = null;
     renderDraft();
     showToast("Reverted changes to " + revertedName);
   });
@@ -1525,14 +1970,19 @@
     var hasItems = draft.items.length > 0;
     var hasFields = el.itemName.value.trim() !== "" || el.itemPrice.value.trim() !== "" || (draft.location && draft.location.trim() !== "");
     if(!hasItems && !hasFields) return;
+    if(hasItems && !confirm("Clear all items and form fields?")) return;
 
-    if(hasItems){
-      if(!confirm("Clear all items and form fields?")) return;
+    var candidate = { location:"", items:[] };
+    cancelLocationSave();
+    if(!saveDraft(candidate)){
+      renderDraft();
+      showToast("Today's list was not cleared because it could not be saved");
+      return;
     }
     hideUndoPopup();
+    lastEditedSnapshot = null;
     exitEdit();
-    draft = { location:"", items:[] };
-    persistDraft();
+    draft = candidate;
     renderDraft();
     showToast("Cleared Today's list and form");
   }
@@ -1540,8 +1990,8 @@
 
   function addItem(){
     var name = el.itemName.value.trim().slice(0, 150);
-    var price = parseFloat(el.itemPrice.value);
-    var qty = parseInt(el.itemQty.value, 10);
+    var price = parseStrictNumber(el.itemPrice.value);
+    var qty = parseStrictNumber(el.itemQty.value);
 
     if(!name){ el.itemName.focus(); return; }
     if(!isFinite(price) || price < 0 || price > 10000000){
@@ -1549,48 +1999,81 @@
       el.itemPrice.focus();
       return;
     }
-    if(isNaN(qty) || qty < 1){
-      qty = 1;
+    if(!isFinite(qty) || qty < 1 || Math.floor(qty) !== qty){
+      showToast("Please enter a whole quantity of 1 or more");
+      el.itemQty.focus();
+      return;
     }
 
     price = roundMoney(price);
+    if(!isFinite(price)){
+      showToast("The price is outside the supported numeric range");
+      el.itemPrice.focus();
+      return;
+    }
 
-    if(editingId){
+    var candidate = cloneDraft(draft);
+    candidate.pendingSavedSessionId = null;
+    var previousItem = null;
+    var wasEditing = Boolean(editingId);
+    if(wasEditing){
       var idx = -1;
-      for(var i=0;i<draft.items.length;i++){
-        if(draft.items[i].id === editingId){ idx = i; break; }
+      for(var i=0; i<candidate.items.length; i++){
+        if(candidate.items[i].id === editingId){ idx = i; break; }
       }
       if(idx !== -1){
-        var prevItem = {
-          id: draft.items[idx].id,
-          name: draft.items[idx].name,
-          price: draft.items[idx].price,
-          qty: draft.items[idx].qty
+        previousItem = {
+          id:candidate.items[idx].id,
+          name:candidate.items[idx].name,
+          price:candidate.items[idx].price,
+          qty:candidate.items[idx].qty
         };
-        draft.items[idx].name = name;
-        draft.items[idx].price = price;
-        draft.items[idx].qty = qty;
-        showUndoPopup(prevItem, name);
+        candidate.items[idx].name = name;
+        candidate.items[idx].price = price;
+        candidate.items[idx].qty = qty;
       } else {
-        draft.items.push({ id:uid(), name:name, price:price, qty:qty });
+        candidate.items.push({ id:uniqueItemId(candidate.items), name:name, price:price, qty:qty });
       }
+    } else {
+      candidate.items.push({ id:uniqueItemId(candidate.items), name:name, price:price, qty:qty });
+    }
+
+    if(!isFinite(total(candidate.items))){
+      showToast("This quantity would make the total exceed the supported numeric range");
+      el.itemQty.focus();
+      return;
+    }
+
+    cancelLocationSave();
+    if(!saveDraft(candidate)) return;
+    draft = candidate;
+    if(wasEditing){
       exitEdit();
     } else {
-      draft.items.push({ id:uid(), name:name, price:price, qty:qty });
       clearForm();
       el.itemName.focus();
     }
-
-    persistDraft();
+    if(previousItem) showUndoPopup(previousItem, name);
     renderDraft();
   }
   el.addBtn.addEventListener("click", addItem);
 
   function removeItem(id){
+    var candidate = cloneDraft(draft);
+    var oldLength = candidate.items.length;
+    candidate.items = candidate.items.filter(function(i){ return i.id !== id; });
+    candidate.pendingSavedSessionId = null;
+    if(candidate.items.length === oldLength) return;
+
+    cancelLocationSave();
+    if(!saveDraft(candidate)){
+      showToast("Item was not deleted because the change could not be saved");
+      return;
+    }
+    draft = candidate;
     hideUndoPopup();
-    if(id === editingId){ exitEdit(); }
-    draft.items = draft.items.filter(function(i){ return i.id !== id; });
-    persistDraft();
+    lastEditedSnapshot = null;
+    if(id === editingId) exitEdit();
     renderDraft();
   }
 
@@ -1741,30 +2224,99 @@
   });
 
   // ---------- save trip ----------
+  function findPendingSavedSession(currentDraft){
+    if(!currentDraft.pendingSavedSessionId) return null;
+    var pending = null;
+    for(var i=0; i<sessions.length; i++){
+      if(sessions[i].id === currentDraft.pendingSavedSessionId){
+        pending = sessions[i];
+        break;
+      }
+    }
+    if(!pending || pending.items.length !== currentDraft.items.length) return null;
+    var draftLocation = (currentDraft.location || "").trim() || "Unspecified Location";
+    if(pending.location !== draftLocation) return null;
+    for(var j=0; j<pending.items.length; j++){
+      var savedItem = pending.items[j];
+      var draftItem = currentDraft.items[j];
+      if(savedItem.id !== draftItem.id || savedItem.name !== draftItem.name ||
+         savedItem.price !== draftItem.price || savedItem.qty !== draftItem.qty) return null;
+    }
+    return pending;
+  }
+
   el.saveBtn.addEventListener("click", function(){
     if(draft.items.length === 0) return;
-    hideUndoPopup();
-    draft.location = (el.locationInput.value || "").slice(0, 100);
-    var session = {
-      id: uid(),
-      date: new Date().toISOString(),
-      location: draft.location.trim() || "Unspecified Location",
-      items: draft.items,
-      total: total(draft.items)
-    };
-    sessions.unshift(session);
-    var saved = saveSessions(sessions);
-    if(!saved){
-      sessions.shift();
+    var previousDraft = cloneDraft(draft);
+    var existingSavedSession = findPendingSavedSession(draft);
+    if(existingSavedSession){
+      var clearedDraft = { location:"", items:[] };
+      cancelLocationSave();
+      if(!saveDraft(clearedDraft)){
+        renderDraft();
+        showToast("Trip is already saved to History, but Today's draft could not be cleared.");
+        return;
+      }
+      hideUndoPopup();
+      lastEditedSnapshot = null;
+      exitEdit();
+      draft = clearedDraft;
+      renderDraft();
+      showToast("Already saved to History · Today's draft cleared");
       return;
     }
 
-    showToast("Saved · " + session.items.length + " item(s) · " + money(session.total));
+    var currentDraft = cloneDraft(draft);
+    currentDraft.pendingSavedSessionId = null;
+    currentDraft.location = (el.locationInput.value || "").slice(0, 100);
+    var session = {
+      id:uniqueSessionId(sessions),
+      date:new Date().toISOString(),
+      location:currentDraft.location.trim() || "Unspecified Location",
+      items:cloneDraft(currentDraft).items,
+      total:total(currentDraft.items)
+    };
+    if(!isFinite(session.total)){
+      showToast("This trip total exceeds the supported numeric range");
+      return;
+    }
 
+    // Persist the pending session ID with the draft before writing History.
+    // This makes the two-key save recoverable without creating duplicate trips.
+    currentDraft.pendingSavedSessionId = session.id;
+    cancelLocationSave();
+    if(!saveDraft(currentDraft)){
+      draft = previousDraft;
+      renderDraft();
+      showToast("Trip was not saved because today's draft could not be protected");
+      return;
+    }
+    draft = currentDraft;
+
+    var nextSessions = cloneSessions(sessions);
+    nextSessions.unshift(session);
+    if(!saveSessions(nextSessions)){
+      renderDraft();
+      showToast("Trip was not saved. Today's list remains unchanged.");
+      return;
+    }
+    sessions = nextSessions;
+    invalidateKnownItems();
+
+    var emptyDraft = { location:"", items:[] };
+    if(!saveDraft(emptyDraft)){
+      draft = currentDraft;
+      renderDraft();
+      showToast("Trip saved to History, but Today's draft could not be cleared. Press Save again to clear it safely.");
+      return;
+    }
+
+    hideUndoPopup();
+    lastEditedSnapshot = null;
     exitEdit();
-    draft = { location:"", items:[] };
-    persistDraft();
+    draft = emptyDraft;
     renderDraft();
+    showToast("Saved · " + session.items.length + " item(s) · " + money(session.total));
   });
 
   // ---------- history ----------
@@ -1776,24 +2328,24 @@
     }
     el.historyEmpty.hidden = true;
 
-    sessions.forEach(function(s){
+    sessions.forEach(function(s, historyIndex){
       var wrap = document.createElement("div");
       wrap.className = "stub-wrap";
 
       wrap.innerHTML =
         '<div class="stub-tear"></div>' +
         '<div class="stub">' +
-          '<button class="stub-top" type="button">' +
-            '<span>' +
-              '<div class="stub-loc"></div>' +
-              '<div class="stub-date"></div>' +
+          '<button class="stub-top" id="history-toggle-' + historyIndex + '" type="button" aria-expanded="false" aria-controls="history-detail-' + historyIndex + '">' +
+            '<span class="stub-summary-left">' +
+              '<span class="stub-loc"></span>' +
+              '<span class="stub-date"></span>' +
             '</span>' +
-            '<span>' +
-              '<div class="stub-total"></div>' +
-              '<div class="stub-count"></div>' +
+            '<span class="stub-summary-right">' +
+              '<span class="stub-total"></span>' +
+              '<span class="stub-count"></span>' +
             '</span>' +
           '</button>' +
-          '<div class="stub-detail" hidden>' +
+          '<div class="stub-detail" id="history-detail-' + historyIndex + '" role="region" aria-labelledby="history-toggle-' + historyIndex + '" hidden>' +
             '<hr class="divider" />' +
             '<ul class="items"></ul>' +
             '<div class="stub-actions">' +
@@ -1827,28 +2379,48 @@
       }
 
       var detail = wrap.querySelector(".stub-detail");
-      wrap.querySelector(".stub-top").addEventListener("click", function(){
+      var toggle = wrap.querySelector(".stub-top");
+      toggle.addEventListener("click", function(){
         var willOpen = detail.hidden;
         var allDetails = document.querySelectorAll(".stub-detail");
+        var allToggles = document.querySelectorAll(".stub-top");
         for(var dIdx=0; dIdx<allDetails.length; dIdx++){
           allDetails[dIdx].hidden = true;
         }
+        for(var tIdx=0; tIdx<allToggles.length; tIdx++){
+          allToggles[tIdx].setAttribute("aria-expanded", "false");
+        }
         detail.hidden = !willOpen;
+        toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
       });
 
       wrap.querySelector(".edit-btn").addEventListener("click", function(){
         if(draft.items.length > 0 || draft.location){
           if(!confirm("Current items in the 'Today' tab will be replaced with this list. Continue?")) return;
         }
-        hideUndoPopup();
-        exitEdit();
-        draft = {
-          location: s.location,
-          items: s.items.map(function(i){
-            return { id: uid(), name: i.name, price: i.price, qty: i.qty };
-          })
+        var restoredItems = [];
+        for(var restoredIndex=0; restoredIndex<s.items.length; restoredIndex++){
+          var sourceItem = s.items[restoredIndex];
+          restoredItems.push({
+            id:uniqueItemId(restoredItems),
+            name:sourceItem.name,
+            price:sourceItem.price,
+            qty:sourceItem.qty
+          });
+        }
+        var candidate = {
+          location:s.location,
+          items:restoredItems
         };
-        persistDraft();
+        cancelLocationSave();
+        if(!saveDraft(candidate)){
+          showToast("The trip was not loaded because today's draft could not be saved");
+          return;
+        }
+        hideUndoPopup();
+        lastEditedSnapshot = null;
+        exitEdit();
+        draft = candidate;
         renderDraft();
         showTab("today");
         showToast("Loaded trip into Today tab");
@@ -1856,8 +2428,12 @@
 
       wrap.querySelector(".del-btn").addEventListener("click", function(){
         if(!confirm("Delete this entire trip?")) return;
-        sessions = sessions.filter(function(x){ return x.id !== s.id; });
-        saveSessions(sessions);
+        var nextSessions = sessions.filter(function(x){ return x.id !== s.id; });
+        if(!saveSessions(nextSessions)){
+          showToast("Trip was not deleted because the change could not be saved");
+          return;
+        }
+        sessions = nextSessions;
         renderHistory();
       });
 
@@ -1868,12 +2444,14 @@
   // ---------- cross-tab sync ----------
   window.addEventListener("storage", function(e){
     if(e.key === SESSIONS_KEY){
-      sessions = loadSessions();
+      sessions = sortSessionsByDate(loadSessions());
       invalidateKnownItems();
+      renderRecoveryBanner();
       if(!el.viewHistory.hidden) renderHistory();
     }
     if(e.key === DRAFT_KEY){
       draft = loadDraft();
+      renderRecoveryBanner();
       if(editingId){
         var exists = false;
         for(var k=0; k<draft.items.length; k++){
@@ -1884,16 +2462,17 @@
       if(!el.viewToday.hidden) renderDraft();
     }
     if(e.key === THEME_KEY){
-      var remoteTheme = localStorage.getItem(THEME_KEY) || "default";
-      applyTheme(remoteTheme);
+      var remoteTheme = "default";
+      try{ remoteTheme = localStorage.getItem(THEME_KEY) || "default"; }catch(storageError){}
+      applyTheme(remoteTheme, true);
     }
   });
 
   // ---------- version badge / manual update check ----------
-  var currentVersion = "v9";
+  var currentVersion = "v10";
   var swRegistration = null;
   var hadController = Boolean(navigator.serviceWorker && navigator.serviceWorker.controller);
-  var watchdogTimer = null;
+  var updateCheckInProgress = false;
 
   function renderVersionLabel(v){
     if(!v){ el.versionLabel.textContent = "…"; return; }
@@ -1910,12 +2489,8 @@
   function setUpdating(isUpdating){
     el.versionBtn.disabled = isUpdating;
     if(isUpdating){
-      el.versionLabel.textContent = "updating...";
+      el.versionLabel.textContent = "checking...";
     } else {
-      if(watchdogTimer){
-        clearTimeout(watchdogTimer);
-        watchdogTimer = null;
-      }
       renderVersionLabel(currentVersion);
     }
   }
@@ -1923,7 +2498,6 @@
   if("serviceWorker" in navigator){
     navigator.serviceWorker.addEventListener("message", function(event){
       if(event.data && event.data.type === "VERSION"){
-        setUpdating(false);
         renderVersionLabel(event.data.version);
       }
     });
@@ -1933,6 +2507,7 @@
         showToast("App updated in background! Ready.");
       }
       hadController = true;
+      updateCheckInProgress = false;
       setUpdating(false);
       requestVersionFromSW();
     });
@@ -1941,29 +2516,97 @@
       navigator.serviceWorker.register("sw.js").then(function(reg){
         swRegistration = reg;
         requestVersionFromSW();
-      }).catch(function(){ el.versionBtn.hidden = true; });
+      }).catch(function(){
+        el.versionBtn.hidden = true;
+      });
     });
 
     el.versionBtn.addEventListener("click", function(){
-      if(!swRegistration){ return; }
+      if(!swRegistration || updateCheckInProgress) return;
+      updateCheckInProgress = true;
       setUpdating(true);
+
       var updateFound = false;
-      function onUpdateFound(){ updateFound = true; }
-      swRegistration.addEventListener("updatefound", onUpdateFound);
-      swRegistration.update().catch(function(){ setUpdating(false); });
+      var updateWorker = null;
 
-      watchdogTimer = setTimeout(function(){
-        setUpdating(false);
-      }, 6000);
-
-      setTimeout(function(){
-        swRegistration.removeEventListener("updatefound", onUpdateFound);
-        if(!updateFound){
+      function onWorkerStateChange(){
+        if(!updateWorker) return;
+        var workerState = updateWorker.state;
+        if(workerState === "installed" || workerState === "activating" || workerState === "activated"){
+          updateCheckInProgress = false;
           setUpdating(false);
-          requestVersionFromSW();
-          showToast("Already on the latest version");
+          updateWorker.removeEventListener("statechange", onWorkerStateChange);
+          if(workerState === "installed"){
+            if(navigator.serviceWorker.controller){
+              showToast("Update installed and ready");
+            } else {
+              showToast("Update installed. Reload to start using it.");
+            }
+          }
+        } else if(workerState === "redundant"){
+          updateCheckInProgress = false;
+          setUpdating(false);
+          updateWorker.removeEventListener("statechange", onWorkerStateChange);
+          showToast("Update installation did not complete");
         }
-      }, 2500);
+      }
+
+      function onUpdateFound(){
+        updateFound = true;
+        updateWorker = swRegistration.installing;
+        if(updateWorker){
+          updateWorker.addEventListener("statechange", onWorkerStateChange);
+        }
+      }
+
+      swRegistration.addEventListener("updatefound", onUpdateFound);
+      swRegistration.update().then(function(){
+        swRegistration.removeEventListener("updatefound", onUpdateFound);
+        if(updateFound){
+          if(updateWorker && (updateWorker.state === "installed" ||
+             updateWorker.state === "activating" || updateWorker.state === "activated" ||
+             updateWorker.state === "redundant")){
+            onWorkerStateChange();
+          } else if(!updateWorker && swRegistration.waiting){
+            updateCheckInProgress = false;
+            setUpdating(false);
+            showToast("An app update is waiting to activate");
+          } else if(updateWorker){
+            el.versionBtn.disabled = true;
+            el.versionLabel.textContent = "installing...";
+            showToast("Update found. Installation is still in progress.");
+          } else {
+            updateCheckInProgress = false;
+            setUpdating(false);
+            showToast("Update found; waiting for the browser to finish installation.");
+          }
+          return;
+        }
+        if(swRegistration.waiting){
+          updateCheckInProgress = false;
+          setUpdating(false);
+          showToast("An app update is waiting to activate");
+          return;
+        }
+        if(swRegistration.installing){
+          updateCheckInProgress = false;
+          setUpdating(false);
+          showToast("An app update is already installing");
+          return;
+        }
+        updateCheckInProgress = false;
+        setUpdating(false);
+        requestVersionFromSW();
+        showToast("Already on the latest version");
+      }).catch(function(){
+        swRegistration.removeEventListener("updatefound", onUpdateFound);
+        if(updateWorker){
+          updateWorker.removeEventListener("statechange", onWorkerStateChange);
+        }
+        updateCheckInProgress = false;
+        setUpdating(false);
+        showToast("Could not check for updates. Check your connection and retry.");
+      });
     });
   } else {
     el.versionBtn.hidden = true;
