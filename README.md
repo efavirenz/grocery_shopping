@@ -9,6 +9,7 @@ A shopping list app for tracking grocery items while shopping. Calculates itemiz
 ### Version: v10.1
 
 - **Version Badge Cleanup**: Removed the refresh symbol from the Home screen version badge while preserving its update-check button behavior; version labels now correctly display major.minor versions such as v10.1.
+- **Location Field Visibility**: Matched the Location input background to the + Add Item accent color, with theme-aware foreground and placeholder colors for clearer visibility.
 
 ### Version: v10
 
