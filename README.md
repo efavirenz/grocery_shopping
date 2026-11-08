@@ -1,10 +1,14 @@
-# Grocery Receipt PWA (v10.1)
+# Grocery Receipt PWA (v10.2)
 
-**Version**: v10.1 (matches the scoped CACHE_NAME version suffix in sw.js)
+**Version**: v10.2 (matches the scoped CACHE_NAME version suffix in sw.js)
 
 A shopping list app for tracking grocery items while shopping. Calculates itemized subtotals (price × quantity) and the grand total in real time. Stores history for each trip locally in browser localStorage and can be installed as a PWA on an iPhone home screen.
 
 ## Key Features & Recent Updates
+
+### Version: v10.2
+
+- **Native System UI Typography**: Replaced IBM Plex Sans with the platform-native system font stack (San Francisco on Apple platforms, Segoe UI on Windows, Roboto on Android, then Helvetica/Arial fallbacks). IBM Plex Mono remains for receipt and numeric text.
 
 ### Version: v10.1
 

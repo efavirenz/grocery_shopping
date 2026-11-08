@@ -4,7 +4,7 @@
 const scopePath = new URL(self.registration.scope).pathname.replace(/^\/+|\/+$/g, "");
 const scopeKey = scopePath ? encodeURIComponent(scopePath).replace(/%/g, "_") : "root";
 const APP_CACHE_PREFIX = "grocery-receipt-" + scopeKey + "-";
-const CACHE_NAME = APP_CACHE_PREFIX + "v10.1";
+const CACHE_NAME = APP_CACHE_PREFIX + "v10.2";
 const LEGACY_CACHE_NAME = "grocery-receipt-v9";
 const APP_SHELL_URL = new URL("./index.html", self.registration.scope).href;
 
