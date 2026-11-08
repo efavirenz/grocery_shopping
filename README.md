@@ -1,10 +1,14 @@
-# Grocery Receipt PWA (v10)
+# Grocery Receipt PWA (v10.1)
 
-**Version**: v10 (matches the scoped CACHE_NAME version suffix in sw.js)
+**Version**: v10.1 (matches the scoped CACHE_NAME version suffix in sw.js)
 
 A shopping list app for tracking grocery items while shopping. Calculates itemized subtotals (price × quantity) and the grand total in real time. Stores history for each trip locally in browser localStorage and can be installed as a PWA on an iPhone home screen.
 
 ## Key Features & Recent Updates
+
+### Version: v10.1
+
+- **Version Badge Cleanup**: Removed the refresh symbol from the Home screen version badge while preserving its update-check button behavior; version labels now correctly display major.minor versions such as v10.1.
 
 ### Version: v10
 
@@ -118,4 +122,4 @@ A shopping list app for tracking grocery items while shopping. Calculates itemiz
 
 ## Future App Updates
 
-Whenever you modify index.html, manifest.json, or files inside icons/, bump the vN suffix in CACHE_NAME in sw.js and update currentVersion in index.html plus the README version header. The cache name combines the app-specific prefix (derived from the encoded Service Worker registration path) with that version suffix. Keep the exact previous global cache name in LEGACY_CACHE_NAME only while one-time legacy cleanup is needed; do not delete unrelated Cache Storage entries.
+Whenever you modify index.html, manifest.json, or files inside icons/, bump the app release suffix (vMAJOR.MINOR) in CACHE_NAME in sw.js and update currentVersion in index.html plus the README version header. The cache name combines the app-specific prefix (derived from the encoded Service Worker registration path) with that version suffix. Keep the exact previous global cache name in LEGACY_CACHE_NAME only while one-time legacy cleanup is needed; do not delete unrelated Cache Storage entries.

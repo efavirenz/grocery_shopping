@@ -197,7 +197,6 @@
     min-height:44px;
     display:inline-flex;
     align-items:center;
-    gap:4px;
     border:1.5px solid var(--line);
     background:var(--surface);
     color:var(--ink-soft);
@@ -211,7 +210,6 @@
   }
   .version-btn:active{ background:var(--paper); }
   .version-btn:disabled{ opacity:.7; cursor:default; }
-  .version-btn .v-refresh{ font-size:12px; line-height:1; }
 
   /* ---------- Drawer Menu ---------- */
   .menu-overlay{
@@ -826,7 +824,6 @@
     </div>
     <div class="header-right">
       <button class="version-btn mono" id="versionBtn" type="button" aria-label="Check for updates">
-        <span class="v-refresh" aria-hidden="true">&#8635;</span>
         <span id="versionLabel">…</span>
       </button>
       <span class="today-date mono" id="todayDate"></span>
@@ -2469,7 +2466,7 @@
   });
 
   // ---------- version badge / manual update check ----------
-  var currentVersion = "v10";
+  var currentVersion = "v10.1";
   var swRegistration = null;
   var hadController = Boolean(navigator.serviceWorker && navigator.serviceWorker.controller);
   var updateCheckInProgress = false;
@@ -2477,7 +2474,7 @@
   function renderVersionLabel(v){
     if(!v){ el.versionLabel.textContent = "…"; return; }
     currentVersion = v;
-    var m = /v(\d+)\s*$/i.exec(v);
+    var m = /v(\d+(?:\.\d+)?)\s*$/i.exec(v);
     el.versionLabel.textContent = m ? ("v" + m[1]) : v;
   }
 
