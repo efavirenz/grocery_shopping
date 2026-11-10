@@ -2,6 +2,7 @@
   "name": "Grocery Receipt",
   "short_name": "Grocery",
   "description": "Track grocery items and totals while shopping. View past trip history.",
+  "id": "./index.html",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
