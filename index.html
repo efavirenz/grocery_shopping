@@ -41,6 +41,10 @@
     --green:#2F6F4E;
     --green-dark:#20503A;
     --on-accent:#FFFFFF;
+    /* Location input: a low-intensity accent tint, deliberately lighter than
+       the primary --green button so the field reads as secondary. Each theme
+       overrides it; a missing override would silently inherit Forest. */
+    --loc-bg:#E2EBE6;
     --red:#B23A2E;
     --line:#CBC7BA;
     --radius:16px;
@@ -54,22 +58,26 @@
     --green: #2563EB;
     --green-dark: #1D4ED8;
     --paper: #EEF2FF;
+    --loc-bg: #E0E9FC;
   }
   body.theme-sakura {
     --green: #DB2777;
     --green-dark: #9D174D;
     --paper: #FDF2F8;
+    --loc-bg: #FAE1EC;
   }
   body.theme-sunset {
     --green: #EA580C;
     --on-accent: #211F1B;
     --green-dark: #C2410C;
     --paper: #FFF7ED;
+    --loc-bg: #FCE8DD;
   }
   body.theme-grape {
     --green: #7C3AED;
     --green-dark: #6D28D9;
     --paper: #F5F3FF;
+    --loc-bg: #EDE3FC;
   }
   body.theme-dark {
     --on-accent: #211F1B;
@@ -81,6 +89,7 @@
     --green-dark: #22C55E;
     --line: #3F3F56;
     --red: #EF4444;
+    --loc-bg: #293A41;
     color-scheme: dark;
   }
   body.theme-nordic {
@@ -93,6 +102,7 @@
     --green-dark: #0EA5E9;
     --line: #334155;
     --red: #F87171;
+    --loc-bg: #213B52;
     color-scheme: dark;
   }
   body.theme-mocha {
@@ -105,6 +115,7 @@
     --green-dark: #D97706;
     --line: #3D332F;
     --red: #EF4444;
+    --loc-bg: #41301C;
     color-scheme: dark;
   }
   body.theme-amethyst {
@@ -117,6 +128,7 @@
     --green-dark: #A855F7;
     --line: #3B2E58;
     --red: #F87171;
+    --loc-bg: #372850;
     color-scheme: dark;
   }
   body.theme-cyber {
@@ -129,6 +141,7 @@
     --green-dark: #F43F5E;
     --line: #2D2D3B;
     --red: #FB7185;
+    --loc-bg: #35242E;
     color-scheme: dark;
   }
 
@@ -477,18 +490,35 @@
     margin-top:8px;
     transition:color .15s, border-color .15s, background-color .15s;
   }
-  .clear-btn:hover, .clear-btn:focus-visible{
-    color:var(--red);
-    border-color:var(--red);
-    background:rgba(178,58,46,.06);
+  /* Neutral emphasis only. Tapping Clear used to leave a sticky :hover (touch)
+     or :focus-visible (WebKit) that painted the button red after use. */
+  @media (hover:hover) and (pointer:fine){
+    .clear-btn:hover{
+      color:var(--ink);
+      border-color:var(--ink-soft);
+      background:rgba(33,31,27,.05);
+    }
+    body.is-dark .clear-btn:hover{
+      color:var(--ink);
+      border-color:var(--ink-soft);
+      background:rgba(255,255,255,.10);
+    }
+  }
+  .clear-btn:focus-visible{
+    color:var(--ink);
+    border-color:var(--ink-soft);
+    background:rgba(33,31,27,.05);
+  }
+  body.is-dark .clear-btn:focus-visible{
+    color:var(--ink);
+    border-color:var(--ink-soft);
+    background:rgba(255,255,255,.10);
   }
   .clear-btn:active{
-    background:rgba(178,58,46,.12);
+    background:rgba(33,31,27,.10);
   }
-  body.is-dark .clear-btn:hover, body.is-dark .clear-btn:focus-visible{
-    color:var(--red);
-    border-color:var(--red);
-    background:rgba(239,68,68,.12);
+  body.is-dark .clear-btn:active{
+    background:rgba(255,255,255,.14);
   }
 
   .edit-banner{
@@ -584,15 +614,15 @@
     font-size:16px;
     font-family:var(--font-ui);
     font-weight:600;
-    background:var(--green);
-    color:var(--on-accent);
+    background:var(--loc-bg);
+    color:var(--ink);
   }
-  .loc-field input:focus{ border-color:var(--on-accent); }
-  .loc-field input:focus-visible{ outline-color:var(--on-accent); }
-  /* Solid --on-accent, no opacity. Opacity composites against the accent
-     background and pushed the placeholder below 4.5:1 in every bright theme
-     (3.28-4.35:1); solid --on-accent is 4.60-5.99:1 bright and 6.11-9.44:1 dark. */
-  .loc-field input::placeholder{ font-weight:400; color:var(--on-accent); opacity:1; }
+  .loc-field input:focus{ border-color:var(--green-dark); }
+  body.is-dark .loc-field input:focus{ border-color:var(--green); }
+  /* The tint is light in bright themes and dark in dark themes, so the
+     placeholder is --ink-soft rather than --on-accent: measured 4.52-6.01:1
+     across all ten themes, with entered text at 9.39-13.89:1. */
+  .loc-field input::placeholder{ font-weight:400; color:var(--ink-soft); opacity:1; }
 
   .divider{ border:none; border-top:1.5px dashed var(--line); margin:12px 0; }
 
@@ -2370,6 +2400,19 @@
   });
 
   // ---------- clear today & form ----------
+  // A tap that starts on a suggestion must never activate a control it lands
+  // on after the list collapses. Clicks synthesised by keyboard/programmatic
+  // activation have detail === 0 and are always allowed.
+  var lastPointerDownTarget = null;
+  document.addEventListener("pointerdown", function(e){
+    lastPointerDownTarget = e.target;
+  }, true);
+  function isRealButtonClick(e, btn){
+    if(!e.detail) return true;
+    if(!lastPointerDownTarget) return true;
+    return btn === lastPointerDownTarget || btn.contains(lastPointerDownTarget);
+  }
+
   function clearAllToday(){
     var hasItems = draft.items.length > 0;
     var hasFields = el.itemName.value.trim() !== "" || el.itemPrice.value.trim() !== "" || (draft.location && draft.location.trim() !== "");
@@ -2389,7 +2432,10 @@
     renderDraft();
     showToast("Cleared Today's list and form");
   }
-  el.clearBtn.addEventListener("click", clearAllToday);
+  el.clearBtn.addEventListener("click", function(e){
+    if(!isRealButtonClick(e, el.clearBtn)) return;
+    clearAllToday();
+  });
 
   function clearFieldError(input){
     input.removeAttribute("aria-invalid");
@@ -2475,7 +2521,10 @@
     if(previousItem) showUndoPopup("Edited: " + name, { type:"edit", snapshot:previousItem });
     renderDraft();
   }
-  el.addBtn.addEventListener("click", addItem);
+  el.addBtn.addEventListener("click", function(e){
+    if(!isRealButtonClick(e, el.addBtn)) return;
+    addItem();
+  });
 
   function removeItem(id){
     var candidate = cloneDraft(draft);
@@ -2595,11 +2644,30 @@
       btn.innerHTML = '<span></span><span class="sugg-price mono"></span>';
       btn.querySelector("span").textContent = m.name;
       btn.querySelector(".sugg-price").textContent = money(m.price);
+      // Select on pointerup/click, never on pointerdown: removing the row
+      // during pointerdown makes the tap's click land on whatever the list was
+      // covering (the + Add Item / Clear buttons).
+      var pressX = 0, pressY = 0, moved = false, selected = false;
       btn.addEventListener("pointerdown", function(e){
         e.preventDefault();
+        moved = false;
+        selected = false;
+        pressX = e.clientX || 0;
+        pressY = e.clientY || 0;
+      });
+      btn.addEventListener("pointermove", function(e){
+        if(Math.abs((e.clientX || 0) - pressX) > 10 ||
+           Math.abs((e.clientY || 0) - pressY) > 10) moved = true;
+      });
+      btn.addEventListener("pointerup", function(){
+        if(moved) return;
+        selected = true;
         selectSuggestion(m);
       });
-      btn.addEventListener("click", function(){ selectSuggestion(m); });
+      btn.addEventListener("click", function(){
+        if(selected) return;
+        selectSuggestion(m);
+      });
       el.suggestions.appendChild(btn);
     });
     el.suggestions.hidden = false;
@@ -2977,7 +3045,7 @@
   // page identity) is still the old one until the document is replaced, so the
   // badge must not report the new worker's cache name. The worker version is
   // kept separately as a diagnostic in the button's tooltip.
-  var PAGE_VERSION = "v10.3";
+  var PAGE_VERSION = "v10.4";
   var workerVersion = "";
   var swRegistration = null;
   var hadController = Boolean(navigator.serviceWorker && navigator.serviceWorker.controller);

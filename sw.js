@@ -4,10 +4,7 @@
 const scopePath = new URL(self.registration.scope).pathname.replace(/^\/+|\/+$/g, "");
 const scopeKey = scopePath ? encodeURIComponent(scopePath).replace(/%/g, "_") : "root";
 const APP_CACHE_PREFIX = "grocery-receipt-" + scopeKey + "-";
-const CACHE_NAME = APP_CACHE_PREFIX + "v10.3";
-// One-time cleanup of the pre-scoping global cache left by v9. Keep for v10.3
-// only: remove in the next release (target v10.4).
-const LEGACY_CACHE_NAME = "grocery-receipt-v9";
+const CACHE_NAME = APP_CACHE_PREFIX + "v10.4";
 const APP_SHELL_URL = new URL("./index.html", self.registration.scope).href;
 
 // Load-bearing shell entries. If either cannot be precached the install fails,
@@ -60,7 +57,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(
-        keys.filter((key) => key.indexOf(APP_CACHE_PREFIX) === 0 || key === LEGACY_CACHE_NAME)
+        keys.filter((key) => key.indexOf(APP_CACHE_PREFIX) === 0)
           .filter((key) => key !== CACHE_NAME)
           .map((key) => caches.delete(key))
       ))

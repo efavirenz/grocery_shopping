@@ -1,10 +1,17 @@
-# Grocery Receipt PWA (v10.3)
+# Grocery Receipt PWA (v10.4)
 
-**Version**: v10.3 (matches the scoped CACHE_NAME version suffix in sw.js)
+**Version**: v10.4 (matches the scoped CACHE_NAME version suffix in sw.js)
 
 A shopping list app for tracking grocery items while shopping. Calculates itemized subtotals (price × quantity) and the grand total in real time. Stores history for each trip locally in browser localStorage and can be installed as a PWA on an iPhone home screen.
 
 ## Key Features & Recent Updates
+
+### Version: v10.4
+
+- **Suggestion Taps No Longer Add Items**: Choosing an autocomplete suggestion used to fill the form on `pointerdown` and remove the list from the DOM mid-gesture, so the tap's `click` landed on whatever the list had been covering — often **+ Add Item** or **Clear**. Selection now happens on `pointerup`/`click`, a 10 px movement threshold prevents a drag from selecting a row, and a pointerdown-origin guard ignores any click that did not start on the button it activates. Keyboard and programmatic activations (`detail === 0`) are unaffected.
+- **Neutral Clear Button**: Clear no longer turns red after it is tapped. The red `:hover`/`:focus-visible` state was sticking on touch devices (and matched by WebKit after a tap); hover is now gated behind `@media (hover:hover) and (pointer:fine)` and every state uses neutral ink. The global green focus ring still marks keyboard focus.
+- **Quieter Location Field**: The supermarket name input was filled with solid `--green`, the same weight as the primary action. It now uses a per-theme `--loc-bg` accent tint (14 % over `--surface` bright, 12 % dark) with `--ink` text and an `--ink-soft` placeholder. Measured 9.39–13.89:1 for entered text and 4.52–6.01:1 for the placeholder across all ten themes.
+- **Legacy Cache Exception Retired**: `LEGACY_CACHE_NAME` and its activation clause are removed now that the scheduled v10.4 cleanup point has arrived. Activation deletes only caches whose name starts with this scope's `APP_CACHE_PREFIX`; a `grocery-receipt-v9` cache left by an install that skipped v10.3 is now inert and preserved rather than deleted.
 
 ### Version: v10.3
 
@@ -171,10 +178,10 @@ A shopping list app for tracking grocery items while shopping. Calculates itemiz
 | Amethyst | 7.01 | 6.23 | 5.70 | 6.23 |
 | Cyber | 7.78 | 7.15 | 6.39 | 6.11 |
 
-The Location placeholder now uses solid `--on-accent` (no opacity), so it inherits the accent ratios above. Recompute this table before shipping any new theme or token change.
+The Location placeholder uses `--ink-soft` on the `--loc-bg` tint, not `--on-accent` on solid `--green`: the tint keeps entered text at 9.39–13.89:1 and the placeholder at 4.52–6.01:1 in all ten themes. Recompute this table before shipping any new theme or token change.
 
 ## Future App Updates
 
 When you modify index.html, manifest.json, or files inside icons/, bump the app release suffix (vMAJOR.MINOR) in CACHE_NAME in sw.js and update PAGE_VERSION in index.html plus the README version header. The cache name combines the app-specific prefix (derived from the encoded Service Worker registration path) with that version suffix. Do not delete unrelated Cache Storage entries.
 
-`LEGACY_CACHE_NAME` currently names the exact pre-scoping global cache `grocery-receipt-v9` for one-time cleanup. It is kept for v10.3 only and is scheduled for removal in v10.4.
+`LEGACY_CACHE_NAME` was retired in v10.4 after its one-release cleanup window. Activation now deletes only caches named with this app's `APP_CACHE_PREFIX`; never reintroduce a hard-coded global cache name, because it can delete a cache this scope did not create.
