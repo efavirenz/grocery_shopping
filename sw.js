@@ -4,7 +4,7 @@
 const scopePath = new URL(self.registration.scope).pathname.replace(/^\/+|\/+$/g, "");
 const scopeKey = scopePath ? encodeURIComponent(scopePath).replace(/%/g, "_") : "root";
 const APP_CACHE_PREFIX = "grocery-receipt-" + scopeKey + "-";
-const CACHE_NAME = APP_CACHE_PREFIX + "v10.4";
+const CACHE_NAME = APP_CACHE_PREFIX + "v10.5";
 const APP_SHELL_URL = new URL("./index.html", self.registration.scope).href;
 
 // Load-bearing shell entries. If either cannot be precached the install fails,
@@ -70,11 +70,13 @@ function matchAppShell() {
 }
 
 // Opaque responses are rejected on purpose: they cannot be validated and are
-// quota-padded. Google Fonts sends Access-Control-Allow-Origin: *, and the page
-// requests its stylesheet with crossorigin, so the font CSS and the WOFF2 files
-// arrive as ordinary CORS responses that can be checked and cached. These
-// cross-origin entries live in this app's scoped cache, which keeps the
-// isolation rule in AGENTS.md intact (the cache is scoped, its entries are not).
+// quota-padded. Same-origin assets and cross-origin responses that opted into
+// CORS (res.type "cors") arrive as ordinary readable responses, so they can be
+// checked and cached; there is currently no cross-origin asset in use, but the
+// rule stays generic so a future CORS-enabled resource is cacheable without
+// loosening the check. These cross-origin entries live in this app's scoped
+// cache, which keeps the isolation rule in AGENTS.md intact (the cache is
+// scoped, its entries are not).
 function isCacheableResponse(res) {
   return Boolean(res) && res.ok && res.status === 200 && res.type !== "opaque";
 }

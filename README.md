@@ -1,10 +1,17 @@
-# Grocery Receipt PWA (v10.4)
+# Grocery Receipt PWA (v10.5)
 
-**Version**: v10.4 (matches the scoped CACHE_NAME version suffix in sw.js)
+**Version**: v10.5 (matches the scoped CACHE_NAME version suffix in sw.js)
 
-A shopping list app for tracking grocery items while shopping. Calculates itemized subtotals (price × quantity) and the grand total in real time. Stores history for each trip locally in browser localStorage and can be installed as a PWA on an iPhone home screen.
+A shopping list app for tracking grocery items while shopping. Calculates itemized subtotals (price × quantity) and the grand total in real time. Stores history for each trip locally in browser localStorage and can be installed as a PWA on an iPhone home screen. Typography is entirely platform-native: there is no web-font download at runtime.
 
 ## Key Features & Recent Updates
+
+### Version: v10.5
+
+- **Single System Font Strategy**: IBM Plex Mono is gone. Headings, labels, form controls, dates, prices, quantities, totals and dynamically generated item rows all use the platform-native UI stack (`-apple-system`, `Segoe UI`, `Roboto`, then Helvetica/Arial). One family now covers the whole app.
+- **Tabular Numerals Instead of a Mono Face**: The old `.mono` class became `.tabular-nums`, which carries only `font-variant-numeric: tabular-nums`. Numeric columns stay stable without a second font family, and the class no longer misdescribes itself. The redundant `.field input.mono` override was deleted, since form controls already use `var(--font-ui)`.
+- **Google Fonts Dependency Removed**: The stylesheet link and both `preconnect` hints are gone. The CSP no longer names `fonts.googleapis.com` in `style-src` or `fonts.gstatic.com` in `font-src`; with no font directive, `font-src` falls back to `default-src 'self'`, so a web font cannot be fetched even if one is reintroduced by mistake.
+- **Zero Third-Party Runtime Requests**: The app now issues no cross-origin requests at all. The Service Worker's runtime CORS caching is unchanged and still generic — it simply has no cross-origin asset to cache today, and its comment no longer cites Google Fonts.
 
 ### Version: v10.4
 
@@ -150,7 +157,7 @@ A shopping list app for tracking grocery items while shopping. Calculates itemiz
 ## Security Notes
 
 - All user-supplied values are rendered with `textContent`; `innerHTML` is only ever used for static structural skeletons. Imported JSON is validated field by field before use.
-- The page ships a `meta`-delivered Content Security Policy: `default-src 'self'`, explicit Google Fonts origins for styles and fonts, `img-src 'self' data:`, `connect-src 'self'`, `manifest-src`/`worker-src 'self'`, `base-uri 'self'` and `form-action 'none'`. Because this is a single-file app, `script-src`/`style-src` necessarily include `'unsafe-inline'`, so the CSP is a containment and egress control rather than an XSS control.
+- The page ships a `meta`-delivered Content Security Policy: `default-src 'self'`, `img-src 'self' data:`, `connect-src 'self'`, `manifest-src`/`worker-src 'self'`, `base-uri 'self'` and `form-action 'none'`. No third-party origin is allowed: `style-src` is limited to `'self' 'unsafe-inline'` and there is no `font-src`, so fonts fall back to `default-src 'self'`. Because this is a single-file app, `script-src`/`style-src` necessarily include `'unsafe-inline'`, so the CSP is a containment and egress control rather than an XSS control.
 - `frame-ancestors` is intentionally absent: it is ignored in `meta`-delivered policies and GitHub Pages cannot send response headers, so clickjacking protection is not available from this file.
 - Service Worker cleanup only deletes caches belonging to this app's registration scope plus one exact legacy name; unrelated origin caches are never touched.
 
@@ -159,7 +166,7 @@ A shopping list app for tracking grocery items while shopping. Calculates itemiz
 - The app is written in ES5 syntax by policy, but ES5 syntax does not imply an ES5 runtime. Supported browsers are modern evergreen engines (current Safari/WebKit, Chrome, Edge, Firefox) and iOS/iPadOS 14.1 or later.
 - The CSS baseline is custom properties, `env(safe-area-inset-*)`, `prefers-reduced-motion`, `:focus-visible` and `overscroll-behavior` — all of which require iOS 14.1+ / modern evergreen. Nothing is transpiled or polyfilled.
 - `Intl` number/date formatting is optional: the app feature-detects it and falls back to ES5 formatting, so a missing ECMA-402 add-on cannot abort startup.
-- IBM Plex Mono still comes from Google Fonts (an accepted, documented trade-off); there are no other third-party runtime dependencies.
+- Typography is the platform-native UI font stack throughout — San Francisco on Apple platforms, Segoe UI on Windows, Roboto on Android, then Helvetica/Arial. No web font is downloaded, and there are no third-party runtime dependencies of any kind.
 
 ## Theme Contrast Reference
 

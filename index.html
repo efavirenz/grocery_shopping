@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Content Security Policy. Must stay before every fetch-bearing tag (the fonts
-     links below) because a meta-delivered policy only governs resources fetched
-     after it is parsed. frame-ancestors is deliberately absent: it is ignored in
+<!-- Content Security Policy. Must stay before every fetch-bearing tag because a
+     meta-delivered policy only governs resources fetched after it is parsed.
+     frame-ancestors is deliberately absent: it is ignored in
      meta-delivered CSP, and GitHub Pages cannot set response headers, so
      anti-framing is not achievable here. script-src/style-src keep
      'unsafe-inline' because this is a single-file app, so this policy is a
-     containment/networking control, not an XSS control. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'none'" />
+     containment/networking control, not an XSS control. Typography is entirely
+     platform-native, so no font origin is allowed: font-src falls back to
+     default-src 'self'. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'none'" />
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Grocery Receipt — Shopping List</title>
@@ -21,13 +23,6 @@
 <meta name="apple-mobile-web-app-title" content="Grocery" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <link rel="icon" href="icons/icon-192.png" />
-
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<!-- crossorigin makes the stylesheet response CORS-enabled (Google sends
-     Access-Control-Allow-Origin: *) so sw.js can validate and cache it at
-     runtime; without it the response is opaque and uncacheable. -->
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous" />
 
 <style>
   :root{
@@ -48,7 +43,8 @@
     --red:#B23A2E;
     --line:#CBC7BA;
     --radius:16px;
-    --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    /* Single font strategy: the platform-native UI stack. Numeric alignment is
+       handled with font-variant-numeric, never a second family. */
     --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color-scheme: light;
   }
@@ -159,7 +155,9 @@
     min-height:100vh;
   }
 
-  .mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+  /* Tabular figures keep numeric columns stable. This is a numeric formatting
+     feature, not a font family: the family stays var(--font-ui) everywhere. */
+  .tabular-nums{ font-variant-numeric:tabular-nums; }
 
   :focus-visible{ outline:2.5px solid var(--green); outline-offset:2px; }
 
@@ -202,7 +200,7 @@
   body.is-dark .menu-toggle:hover{ background:rgba(255,255,255,.1); }
 
   .wordmark{
-    font-family:var(--mono);
+    font-family:var(--font-ui);
     font-weight:600;
     font-size:12px;
     letter-spacing:.14em;
@@ -216,7 +214,7 @@
     gap:5px;
   }
   .today-date{
-    font-family:var(--mono);
+    font-family:var(--font-ui);
     font-size:12px;
     color:var(--ink-soft);
   }
@@ -279,10 +277,10 @@
     display:flex; justify-content:space-between; align-items:center;
     padding-bottom:12px; border-bottom:1.5px solid var(--line);
   }
-  .menu-title{ font-family:var(--mono); font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.08em; }
+  .menu-title{ font-family:var(--font-ui); font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.08em; }
   .menu-close{ min-width:44px; min-height:44px; background:transparent; border:none; font-size:24px; cursor:pointer; color:var(--ink-soft); padding:0 4px; }
   .menu-section{ display:flex; flex-direction:column; gap:10px; }
-  .menu-section-title{ font-family:var(--mono); font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; }
+  .menu-section-title{ font-family:var(--font-ui); font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; }
   .menu-action-btn{
     display:flex; align-items:center; gap:10px;
     width:100%; padding:10px 12px;
@@ -295,7 +293,7 @@
   .theme-picker{ display:flex; flex-direction:column; gap:12px; }
   .theme-group{ display:flex; flex-direction:column; gap:6px; }
   .theme-group-title{
-    font-family:var(--mono);
+    font-family:var(--font-ui);
     font-size:10.5px;
     font-weight:600;
     color:var(--ink-soft);
@@ -381,7 +379,7 @@
 
   /* ---------- Section labels ---------- */
   .section-label{
-    font-family:var(--mono);
+    font-family:var(--font-ui);
     font-size:11px;
     letter-spacing:.1em;
     text-transform:uppercase;
@@ -424,7 +422,6 @@
   .row-2{ display:flex; gap:10px; }
   .row-2 .field-price{ flex:2; min-width:0; }
   .row-2 .field-qty{ flex:1; min-width:0; }
-  .field input.mono{ font-family:var(--mono); }
 
   .suggestions{
     position:absolute;
@@ -454,7 +451,7 @@
   .suggestions button:last-child{ border-bottom:none; }
   .suggestions button:hover, .suggestions button:focus-visible, .suggestions button.active{ background:var(--paper); }
   body.is-dark .suggestions button.active{ background:rgba(255,255,255,.08); }
-  .suggestions button .sugg-price{ color:var(--ink-soft); font-family:var(--mono); font-size:12px; margin-left:6px; }
+  .suggestions button .sugg-price{ color:var(--ink-soft); font-family:var(--font-ui); font-size:12px; margin-left:6px; }
 
   /* Touch-target convention: every interactive control gets min-height:44px
      (plus enough horizontal padding) so mis-taps are rare on a phone in a
@@ -582,14 +579,14 @@
     padding:2px 0 8px;
   }
   .running-total-label{
-    font-family:var(--mono);
+    font-family:var(--font-ui);
     font-weight:700;
     font-size:11px;
     letter-spacing:.08em;
     color:var(--ink-soft);
   }
   .running-total-amount{
-    font-family:var(--mono);
+    font-family:var(--font-ui);
     font-weight:700;
     font-size:22px;
     color:var(--green);
@@ -699,14 +696,14 @@
     align-items:baseline;
   }
   .total-label{
-    font-family:var(--mono);
+    font-family:var(--font-ui);
     font-weight:700;
     font-size:13px;
     letter-spacing:.08em;
     color:var(--ink-soft);
   }
   .total-amount{
-    font-family:var(--mono);
+    font-family:var(--font-ui);
     font-weight:700;
     font-size:26px;
     color:var(--ink);
@@ -860,8 +857,8 @@
   .stub-summary-left{ min-width:0; }
   .stub-summary-right{ text-align:right; }
   .stub-loc{ display:block; font-size:15px; font-weight:700; overflow-wrap:anywhere; }
-  .stub-date{ display:block; font-size:12px; color:var(--ink-soft); font-family:var(--mono); margin-top:2px; }
-  .stub-total{ display:block; font-family:var(--mono); font-weight:700; font-size:16px; white-space:nowrap; }
+  .stub-date{ display:block; font-size:12px; color:var(--ink-soft); font-family:var(--font-ui); margin-top:2px; }
+  .stub-total{ display:block; font-family:var(--font-ui); font-weight:700; font-size:16px; white-space:nowrap; }
   .stub-count{ display:block; font-size:11px; color:var(--ink-soft); text-align:right; margin-top:2px; }
 
   .stub-detail{ margin-top:10px; }
@@ -935,10 +932,10 @@
       <span class="wordmark">Grocery Receipt</span>
     </div>
     <div class="header-right">
-      <button class="version-btn mono" id="versionBtn" type="button" aria-label="Check for updates">
+      <button class="version-btn tabular-nums" id="versionBtn" type="button" aria-label="Check for updates">
         <span id="versionLabel">…</span>
       </button>
-      <span class="today-date mono" id="todayDate"></span>
+      <span class="today-date tabular-nums" id="todayDate"></span>
     </div>
   </header>
 
@@ -998,11 +995,11 @@
       <div class="row-2">
         <div class="field field-price">
           <label for="itemPrice">Price (฿)</label>
-          <input type="number" id="itemPrice" class="mono" placeholder="0.00" inputmode="decimal" min="0" step="0.01" />
+          <input type="number" id="itemPrice" class="tabular-nums" placeholder="0.00" inputmode="decimal" min="0" step="0.01" />
         </div>
         <div class="field field-qty">
           <label for="itemQty">Qty</label>
-          <input type="number" id="itemQty" class="mono" value="1" inputmode="numeric" min="1" step="1" />
+          <input type="number" id="itemQty" class="tabular-nums" value="1" inputmode="numeric" min="1" step="1" />
         </div>
       </div>
       <div class="edit-banner" id="editBanner" hidden>
@@ -1019,7 +1016,7 @@
       <div class="receipt">
         <div class="running-total">
           <span class="running-total-label">RUNNING TOTAL</span>
-          <span class="running-total-amount mono" id="runningTotalAmount">฿0.00</span>
+          <span class="running-total-amount tabular-nums" id="runningTotalAmount">฿0.00</span>
         </div>
         <hr class="divider" />
         <div class="loc-field">
@@ -1034,7 +1031,7 @@
           <hr class="total-rule thin" />
           <div class="total-row">
             <span class="total-label">TOTAL</span>
-            <span class="total-amount mono" id="totalAmount">฿0.00</span>
+            <span class="total-amount tabular-nums" id="totalAmount">฿0.00</span>
           </div>
         </div>
       </div>
@@ -2155,10 +2152,10 @@
         li.innerHTML =
           '<div class="item-main">' +
             '<div class="item-name"></div>' +
-            '<div class="item-meta mono"></div>' +
+            '<div class="item-meta tabular-nums"></div>' +
           '</div>' +
           '<div class="item-right">' +
-            '<span class="item-subtotal mono"></span>' +
+            '<span class="item-subtotal tabular-nums"></span>' +
             '<button class="item-edit" aria-label="Edit item" type="button">&#9998;</button>' +
             '<button class="item-del" aria-label="Delete item" type="button">&times;</button>' +
           '</div>';
@@ -2641,7 +2638,7 @@
       btn.setAttribute("role", "option");
       btn.setAttribute("aria-selected", "false");
       btn.id = "sugg-option-" + idx;
-      btn.innerHTML = '<span></span><span class="sugg-price mono"></span>';
+      btn.innerHTML = '<span></span><span class="sugg-price tabular-nums"></span>';
       btn.querySelector("span").textContent = m.name;
       btn.querySelector(".sugg-price").textContent = money(m.price);
       // Select on pointerup/click, never on pointerdown: removing the row
@@ -2883,9 +2880,9 @@
           li.innerHTML =
             '<div class="item-main">' +
               '<div class="item-name"></div>' +
-              '<div class="item-meta mono"></div>' +
+              '<div class="item-meta tabular-nums"></div>' +
             '</div>' +
-            '<div class="item-right"><span class="item-subtotal mono"></span></div>';
+            '<div class="item-right"><span class="item-subtotal tabular-nums"></span></div>';
           li.querySelector(".item-name").textContent = i.name;
           li.querySelector(".item-meta").textContent = "x" + i.qty + "  ·  " + money(i.price) + "/ea";
           li.querySelector(".item-subtotal").textContent = money(subtotal(i));
@@ -3045,7 +3042,7 @@
   // page identity) is still the old one until the document is replaced, so the
   // badge must not report the new worker's cache name. The worker version is
   // kept separately as a diagnostic in the button's tooltip.
-  var PAGE_VERSION = "v10.4";
+  var PAGE_VERSION = "v10.5";
   var workerVersion = "";
   var swRegistration = null;
   var hadController = Boolean(navigator.serviceWorker && navigator.serviceWorker.controller);
